@@ -86,7 +86,7 @@ export default function Dashboard() {
   }, []);
 
   const { cards, series } = useMemo(() => {
-    if (fills && !fills.length )
+    if (fills && !fills.length)
       return { cards: null, series: { costPerL: [], l100: [] } };
 
     const range = periodRange(period, customFrom, customTo);
@@ -180,7 +180,7 @@ export default function Dashboard() {
       avgDistancePerDay: totalDistance / days, // km/day
     };
 
-    var result= {
+    var result = {
       cards: { ...kpis, empty: false },
       series: { costPerL, l100: l100Series },
     };
@@ -193,190 +193,222 @@ export default function Dashboard() {
     (!customFrom || !customTo || new Date(customFrom) > new Date(customTo));
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
-
-      {/* Controls */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <select
-          className="border rounded p-2"
-          value={vehicleId}
-          onChange={(e) => setVehicleId(Number(e.target.value))}
-        >
-          <option value={0}>All vehicles</option>
-          {vehicles.map((v) => (
-            <option key={v.id} value={v.id}>
-              {v.label}
-            </option>
-          ))}
-        </select>
-
-        <PeriodSelector
-          value={period}
-          onChange={setPeriod}
-          customFrom={customFrom}
-          customTo={customTo}
-          onChangeFrom={setCustomFrom}
-          onChangeTo={setCustomTo}
-          autoApply={true}
-        />
-      </div>
-
-      {loading ? (
-        <p>Loading…</p>
-      ) : !cards || cards.empty ? (
-        showCustomMsg ? (
-          <p className="text-gray-600">
-            Pick a valid custom range (From ≤ To) to see data.
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Dashboard
+          </h2>
+          <p className="text-sm text-slate-600">
+            Your fuel costs and efficiency at a glance.
           </p>
-        ) : (
-          <p className="text-gray-600">No data in the selected range.</p>
-        )
-      ) : (
-        <>
-          {/* KPI Cards */}
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <Card
-              title="Rolling Avg Consumption"
-              value={
-                cards.rollingAvgConsumption != null
-                  ? `${eff(cards.rollingAvgConsumption)} ${effLabel(
-                      efficiencyUnit
-                    )}`
-                  : "—"
-              }
-              info="Fuel efficiency. L/100km: lower is better. (Imperial view shows MPG: higher is better.)"
-            />
-            <Card
-              title={`Avg Cost / ${volumeLabel(volumeUnit)}`}
-              value={
-                cards.rollingAvgCostPerL != null
-                  ? `${pricePerVol(cards.rollingAvgCostPerL)}/${volumeLabel(
-                      volumeUnit
-                    )}`
-                  : "—"
-              }
-              info="Average unit price over the selected period."
-            />
-            <Card
-              title="Total Spend"
-              value={totalMoney(cards.totalSpend)}
-              info="Sum of total amounts in the selected period."
-            />
+        </div>
 
-            <Card
-              title="Total Distance"
-              value={`${dist(cards.totalDistance)} ${distanceLabel(
-                distanceUnit
-              )}`}
-              info="Sum of distances between consecutive fill-ups (per vehicle)."
-            />
-            <Card
-              title={`Avg Cost / ${distanceLabel(distanceUnit)}`}
-              value={
-                cards.avgCostPerKm != null
-                  ? `${costPerDistance(cards.avgCostPerKm)}/${distanceLabel(
-                      distanceUnit
-                    )}`
-                  : "—"
-              }
-              info="Average per-fill cost per distance. Requires consecutive fill-ups with increasing odometer."
-            />
-            <Card
-              title="Avg Distance / Day"
-              value={`${dist(cards.avgDistancePerDay)} ${distanceLabel(
-                distanceUnit
-              )}`}
-              info="Total distance divided by days in the selected range."
-            />
-          </div>
+        {/* Controls */}
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-3 sm:p-4 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <label
+              className="text-sm font-medium text-slate-700"
+              htmlFor="vehicle"
+            >
+              Vehicle
+            </label>
+            <select
+              id="vehicle"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              value={vehicleId}
+              onChange={(e) => setVehicleId(Number(e.target.value))}
+              aria-label="Select vehicle"
+            >
+              <option value={0}>All vehicles</option>
+              {vehicles.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
 
-          {/* Chart 1: Cost per Volume */}
-          <section className="mb-6">
-            <h3 className="font-semibold mb-2">
-              Cost per {volumeLabel(volumeUnit)} Over Time
-              <InfoTip
-                title={`Unit price = total ÷ ${volumeLabel(volumeUnit)}.`}
+            <div className="ml-auto">
+              <PeriodSelector
+                value={period}
+                onChange={setPeriod}
+                customFrom={customFrom}
+                customTo={customTo}
+                onChangeFrom={setCustomFrom}
+                onChangeTo={setCustomTo}
+                autoApply={true}
               />
-            </h3>
-            {series.costPerL.length === 0 ? (
-              <p className="text-gray-600 text-sm">
-                No points available in this range.
-              </p>
-            ) : (
-              <div className="h-64 border rounded p-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={series.costPerL}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip
-                      formatter={(v) => pricePerVol(v)}
-                      labelFormatter={(l) => `Date: ${l}`}
-                    />
-                    <Line type="monotone" dataKey="value" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            <p className="text-xs text-gray-500 mt-1">
-              Unit price = total ÷ {volumeLabel(volumeUnit)}.
+            </div>
+          </div>
+          {showCustomMsg && (
+            <p className="mt-2 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+              Pick a valid custom range (From ≤ To) to see data.
             </p>
-          </section>
+          )}
+        </div>
 
-          {/* Chart 2: Consumption */}
-          <section className="mb-10">
-            <h3 className="font-semibold mb-2">
-              Consumption ({effLabel(efficiencyUnit)}) Over Time
-              <InfoTip title="Computed only when a previous fill exists with higher odometer." />
-            </h3>
-            {series.l100.length === 0 ? (
-              <p className="text-gray-600 text-sm">
-                Need at least two valid fill-ups (same vehicle, increasing
-                odometer) in the period.
+        {/* Content */}
+        <div aria-live="polite" className="space-y-6">
+          {loading ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-slate-600">Loading…</p>
+              <div className="mt-4 h-2 w-full animate-pulse rounded bg-slate-100" />
+            </div>
+          ) : !cards || cards.empty ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+              <p className="text-slate-600">
+                {showCustomMsg
+                  ? "Pick a valid custom range (From ≤ To) to see data."
+                  : "No data in the selected range."}
               </p>
-            ) : (
-              <div className="h-64 border rounded p-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={series.l100}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip
-                      formatter={(v) =>
-                        efficiencyUnit === "mpg"
-                          ? `${num(lPer100kmToMpg(v), 1)} MPG`
-                          : `${num(v, 1)} L/100km`
-                      }
-                      labelFormatter={(l) => `Date: ${l}`}
-                    />
-                    <Line type="monotone" dataKey="value" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            <p className="text-xs text-gray-500 mt-1">
-              {effLabel(efficiencyUnit)} computed only when a previous fill
-              exists with higher odometer.
-            </p>
-          </section>
-        </>
-      )}
+            </div>
+          ) : (
+            <>
+              {/* KPI Cards */}
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card
+                  title="Rolling Avg Consumption"
+                  value={
+                    cards.rollingAvgConsumption != null
+                      ? `${eff(cards.rollingAvgConsumption)} ${effLabel(
+                          efficiencyUnit
+                        )}`
+                      : "—"
+                  }
+                  info="Fuel efficiency. L/100km: lower is better. (Imperial view shows MPG: higher is better.)"
+                />
+                <Card
+                  title={`Avg Cost / ${volumeLabel(volumeUnit)}`}
+                  value={
+                    cards.rollingAvgCostPerL != null
+                      ? `${pricePerVol(cards.rollingAvgCostPerL)}/${volumeLabel(
+                          volumeUnit
+                        )}`
+                      : "—"
+                  }
+                  info="Average unit price over the selected period."
+                />
+                <Card
+                  title="Total Spend"
+                  value={totalMoney(cards.totalSpend)}
+                  info="Sum of total amounts in the selected period."
+                />
 
-      {/* Sticky FAB */}
-      <AddFillUpFAB />
+                <Card
+                  title="Total Distance"
+                  value={`${dist(cards.totalDistance)} ${distanceLabel(
+                    distanceUnit
+                  )}`}
+                  info="Sum of distances between consecutive fill-ups (per vehicle)."
+                />
+                <Card
+                  title={`Avg Cost / ${distanceLabel(distanceUnit)}`}
+                  value={
+                    cards.avgCostPerKm != null
+                      ? `${costPerDistance(cards.avgCostPerKm)}/${distanceLabel(
+                          distanceUnit
+                        )}`
+                      : "—"
+                  }
+                  info="Average per-fill cost per distance. Requires consecutive fill-ups with increasing odometer."
+                />
+                <Card
+                  title="Avg Distance / Day"
+                  value={`${dist(cards.avgDistancePerDay)} ${distanceLabel(
+                    distanceUnit
+                  )}`}
+                  info="Total distance divided by days in the selected range."
+                />
+              </div>
+
+              {/* Chart 1: Cost per Volume */}
+              <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  Cost per {volumeLabel(volumeUnit)} Over Time
+                  <InfoTip
+                    title={`Unit price = total ÷ ${volumeLabel(volumeUnit)}.`}
+                  />
+                </h3>
+                {series.costPerL.length === 0 ? (
+                  <p className="text-sm text-slate-600">
+                    No points available in this range.
+                  </p>
+                ) : (
+                  <div className="h-64 overflow-hidden rounded-lg border border-slate-200">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={series.costPerL}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip
+                          formatter={(v) => pricePerVol(v)}
+                          labelFormatter={(l) => `Date: ${l}`}
+                        />
+                        <Line type="monotone" dataKey="value" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+                <p className="mt-1 text-xs text-slate-500">
+                  Unit price = total ÷ {volumeLabel(volumeUnit)}.
+                </p>
+              </section>
+
+              {/* Chart 2: Consumption */}
+              <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  Consumption ({effLabel(efficiencyUnit)}) Over Time
+                  <InfoTip title="Computed only when a previous fill exists with higher odometer." />
+                </h3>
+                {series.l100.length === 0 ? (
+                  <p className="text-sm text-slate-600">
+                    Need at least two valid fill-ups (same vehicle, increasing
+                    odometer) in the period.
+                  </p>
+                ) : (
+                  <div className="h-64 overflow-hidden rounded-lg border border-slate-200">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={series.l100}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip
+                          formatter={(v) =>
+                            efficiencyUnit === "mpg"
+                              ? `${num(lPer100kmToMpg(v), 1)} MPG`
+                              : `${num(v, 1)} L/100km`
+                          }
+                          labelFormatter={(l) => `Date: ${l}`}
+                        />
+                        <Line type="monotone" dataKey="value" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+                <p className="mt-1 text-xs text-slate-500">
+                  {effLabel(efficiencyUnit)} computed only when a previous fill
+                  exists with higher odometer.
+                </p>
+              </section>
+            </>
+          )}
+        </div>
+
+        {/* Sticky FAB */}
+        <AddFillUpFAB />
+      </div>
     </div>
   );
 }
 
 function Card({ title, value, info }) {
   return (
-    <div className="border rounded p-4">
-      <div className="text-sm text-gray-600 flex items-center">
-        <span>{title}</span>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-sm font-medium text-slate-700">{title}</div>
         {info ? <InfoTip title={info} /> : null}
       </div>
-      <div className="text-xl font-semibold mt-1">{value}</div>
+      <div className="mt-1 text-xl font-semibold text-slate-900">{value}</div>
     </div>
   );
 }
