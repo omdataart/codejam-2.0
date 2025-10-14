@@ -1,30 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSettings, UNIT, EFF } from "../store/settingsStore";
-
+import api from "../lib/api";
 export default function Settings() {
   const settings = useSettings();
   const [form, setForm] = useState({
-    displayName: settings.displayName || "",
-    currency: settings.currency || "INR",
-    distanceUnit: settings.distanceUnit,
-    volumeUnit: settings.volumeUnit,
+    displayName: "",
+    preferredCurrency: "INR",
+    preferredDistanceUnit: settings.preferredDistanceUnit,
+    preferredVolumeUnit: settings.preferredVolumeUnit,
     efficiencyUnit: settings.efficiencyUnit,
     priceDecimals: settings.priceDecimals ?? 2,
   });
 
-  function save(e) {
+   useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const response =  await api.get("/auth/me") // Replace with your API endpoint
+        const userProfile =response.data.data;
+      setForm((f) => ({
+        ...f,
+        displayName: userProfile.displayName,
+        preferredCurrency: userProfile.preferredCurrency || "INR",
+        preferredDistanceUnit:userProfile.preferredDistanceUnit,
+        preferredVolumeUnit:userProfile.preferredVolumeUnit,
+      }));
+        console.log(response.data.data);
+      } catch  { /* empty */ } finally { /* empty */ }
+    };
+
+    fetchData(); // Call the async function
+  }, [settings]);
+
+  async function save(e) {
     e.preventDefault();
-    useSettings.getState().setProfile({
-      displayName: form.displayName.trim(),
-      currency: form.currency,
+    // useSettings.getState().setProfile({
+    //   displayName: form.displayName.trim(),
+    //   preferredCurrency: form.preferredCurrency,
+    // });
+    // useSettings.getState().setUnits({
+    //   preferredDistanceUnit: form.preferredDistanceUnit,
+    //   preferredVolumeUnit: form.preferredVolumeUnit,
+    //   efficiencyUnit: form.efficiencyUnit,
+    //   priceDecimals: Math.min(3, Math.max(2, Number(form.priceDecimals) || 2)),
+    // });
+   await api.put(`/Profile/`, {
+      ...form
     });
-    useSettings.getState().setUnits({
-      distanceUnit: form.distanceUnit,
-      volumeUnit: form.volumeUnit,
-      efficiencyUnit: form.efficiencyUnit,
-      priceDecimals: Math.min(3, Math.max(2, Number(form.priceDecimals) || 2)),
-    });
-    alert("Saved settings");
   }
 
   return (
@@ -50,11 +72,11 @@ export default function Settings() {
               <span className="text-sm text-gray-600">Currency (ISO code)</span>
               <input
                 className="border rounded p-2"
-                value={form.currency}
+                value={form.preferredCurrency}
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    currency: e.target.value.toUpperCase().slice(0, 3),
+                    preferredCurrency: e.target.value.toUpperCase().slice(0, 3),
                   })
                 }
               />
@@ -69,9 +91,9 @@ export default function Settings() {
               <span className="text-sm text-gray-600">Distance</span>
               <select
                 className="border rounded p-2"
-                value={form.distanceUnit}
+                value={form.preferredDistanceUnit}
                 onChange={(e) =>
-                  setForm({ ...form, distanceUnit: e.target.value })
+                  setForm({ ...form, preferredDistanceUnit: e.target.value })
                 }
               >
                 <option value={UNIT.DIST_KM}>Kilometers (km)</option>
@@ -83,9 +105,9 @@ export default function Settings() {
               <span className="text-sm text-gray-600">Volume</span>
               <select
                 className="border rounded p-2"
-                value={form.volumeUnit}
+                value={form.preferredVolumeUnit}
                 onChange={(e) =>
-                  setForm({ ...form, volumeUnit: e.target.value })
+                  setForm({ ...form, preferredVolumeUnit: e.target.value })
                 }
               >
                 <option value={UNIT.VOL_L}>Liters (L)</option>
@@ -93,7 +115,7 @@ export default function Settings() {
               </select>
             </label>
 
-            <label className="flex flex-col">
+            {/* <label className="flex flex-col">
               <span className="text-sm text-gray-600">Efficiency</span>
               <select
                 className="border rounded p-2"
@@ -107,10 +129,10 @@ export default function Settings() {
                 </option>
                 <option value={EFF.MPG}>MPG (higher is better)</option>
               </select>
-            </label>
+            </label> */}
           </div>
 
-          <div className="mt-3 grid md:grid-cols-3 gap-3">
+          {/* <div className="mt-3 grid md:grid-cols-3 gap-3">
             <label className="flex flex-col">
               <span className="text-sm text-gray-600">
                 Price decimals (per L/gal)
@@ -130,7 +152,7 @@ export default function Settings() {
               Display only: data stays stored as metric (km, L). Conversions are
               computed at view time.
             </div>
-          </div>
+          </div> */}
         </section>
 
         <div>

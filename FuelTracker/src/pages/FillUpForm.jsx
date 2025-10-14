@@ -8,15 +8,14 @@ export default function FillUpForm() {
   const nav = useNavigate();
   const [vehicles, setVehicles] = useState([]);
   const [form, setForm] = useState({
-    vehicle_id: "",
+    vehicleId: "",
     date: new Date().toISOString().slice(0, 10),
-    odometer_km: "",
-    station_name: "",
-    fuel_brand: "",
-    fuel_grade: "",
+    odometerKm: "",
+    station: "",
+    brand: "",
+    grade: "",
     liters: "",
-    total_amount: "",
-    currency_code: "",
+    totalAmount: "",
     notes: "",
   });
   const [saving, setSaving] = useState(false);
@@ -26,19 +25,18 @@ export default function FillUpForm() {
 
   useEffect(() => {
     (async () => {
-      const [v] = await Promise.all([api.get("/vehicles")]);
-      setVehicles(v.data);
+      const response = await api.get("/vehicles");
+      setVehicles(response.data.data || []);
       setForm((f) => ({
         ...f,
-        vehicle_id: f.vehicle_id || v.data[0]?.id || "",
-        currency_code: currency,
+        vehicleId: f.vehicleId || response.data[0]?.id || "",
       }));
     })();
-  }, [currency]);
+  }, []);
 
   const unitPriceDisplay = useMemo(() => {
     const liters = Number(form.liters);
-    const total = Number(form.total_amount);
+    const total = Number(form.totalAmount);
     if (!(liters > 0) || !(total > 0)) return null;
     // canonical unit price per L
     const perL = total / liters;
@@ -48,7 +46,7 @@ export default function FillUpForm() {
       currency,
       maximumFractionDigits: priceDecimals,
     }).format(display);
-  }, [form.liters, form.total_amount, currency, volumeUnit, priceDecimals]);
+  }, [form.liters, form.totalAmount, currency, volumeUnit, priceDecimals]);
 
   const v = validate(form);
   const canSave = v.ok && !saving;
@@ -58,11 +56,11 @@ export default function FillUpForm() {
     if (!v.ok) return;
     try {
       setSaving(true);
-      await api.post("/fillups", {
+      await api.post("/FuelEntries", {
         ...form,
-        odometer_km: Number(form.odometer_km),
+        odometerKm: Number(form.odometerKm),
         liters: Number(form.liters),
-        total_amount: Number(form.total_amount),
+        totalAmount: Number(form.totalAmount),
       });
       nav("/app/history");
     } catch (e) {
@@ -83,12 +81,12 @@ export default function FillUpForm() {
             <span className="text-sm text-gray-600">Vehicle *</span>
             <select
               className="border rounded p-2"
-              value={form.vehicle_id}
-              onChange={(e) => setForm({ ...form, vehicle_id: e.target.value })}
+              value={form.vehicleId}
+              onChange={(e) => setForm({ ...form, vehicleId: Number(e.target.value) })}
             >
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>
-                  {v.name}
+                  {v.label}
                 </option>
               ))}
             </select>
@@ -113,9 +111,9 @@ export default function FillUpForm() {
             <span className="text-sm text-gray-600">Odometer (km) *</span>
             <input
               className="border rounded p-2"
-              value={form.odometer_km}
+              value={form.odometerKm}
               onChange={(e) =>
-                setForm({ ...form, odometer_km: e.target.value })
+                setForm({ ...form, odometerKm: e.target.value })
               }
             />
             {!v.odo.ok && (
@@ -144,9 +142,9 @@ export default function FillUpForm() {
             <span className="text-sm text-gray-600">Total ({currency}) *</span>
             <input
               className="border rounded p-2"
-              value={form.total_amount}
+              value={form.totalAmount}
               onChange={(e) =>
-                setForm({ ...form, total_amount: e.target.value })
+                setForm({ ...form, totalAmount: e.target.value })
               }
             />
             {!v.total.ok && (
@@ -160,9 +158,9 @@ export default function FillUpForm() {
             <span className="text-sm text-gray-600">Station</span>
             <input
               className="border rounded p-2"
-              value={form.station_name}
+              value={form.station}
               onChange={(e) =>
-                setForm({ ...form, station_name: e.target.value })
+                setForm({ ...form, station: e.target.value })
               }
             />
           </label>
@@ -170,16 +168,16 @@ export default function FillUpForm() {
             <span className="text-sm text-gray-600">Brand</span>
             <input
               className="border rounded p-2"
-              value={form.fuel_brand}
-              onChange={(e) => setForm({ ...form, fuel_brand: e.target.value })}
+              value={form.brand}
+              onChange={(e) => setForm({ ...form, brand: e.target.value })}
             />
           </label>
           <label className="flex flex-col">
             <span className="text-sm text-gray-600">Grade</span>
             <input
               className="border rounded p-2"
-              value={form.fuel_grade}
-              onChange={(e) => setForm({ ...form, fuel_grade: e.target.value })}
+              value={form.grade}
+              onChange={(e) => setForm({ ...form, grade: e.target.value })}
             />
           </label>
         </div>
@@ -232,13 +230,13 @@ function validate(f) {
     total: { ok: true, msg: "" },
     notes: { ok: true, msg: "" },
   };
-  if (!f.vehicle_id) mark("Vehicle is required");
+  if (!f.vehicleId) mark("Vehicle is required");
   if (!f.date || f.date > today)
     markField("date", "Date cannot be in the future.");
-  if (!(Number(f.odometer_km) >= 0))
+  if (!(Number(f.odometerKm) >= 0))
     markField("odo", "Odometer must be a number ≥ 0.");
   if (!(Number(f.liters) > 0)) markField("liters", "Volume must be > 0.");
-  if (!(Number(f.total_amount) > 0)) markField("total", "Total must be > 0.");
+  if (!(Number(f.totalAmount) > 0)) markField("total", "Total must be > 0.");
   if ((f.notes || "").length > 500)
     markField("notes", "Notes must be ≤ 500 characters.");
 

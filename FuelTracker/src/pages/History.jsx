@@ -44,12 +44,13 @@ export default function History() {
     (async () => {
       try {
         setLoading(true);
+        // forkjoin
         const [f, v] = await Promise.all([
-          api.get("/fillups"),
+          api.get("/FuelEntries"),
           api.get("/vehicles"),
         ]);
-        setAllFillups(f.data);
-        setVehicles(v.data);
+        setAllFillups(f.data.data || []);
+        setVehicles(v.data.data || []);
       } catch (e) {
         setError(e?.response?.data?.message || e.message || "Failed to load");
       } finally {
@@ -59,28 +60,29 @@ export default function History() {
   }, []);
 
   const filtered = useMemo(() => {
+    if(!allFillups || allFillups.length === 0) return [];
     const fromDate = from ? new Date(from) : null;
     const toDate = to ? new Date(to) : null;
 
-    return allFillups.filter((f) => {
-      if (vehicleId !== "all" && f.vehicle_id !== vehicleId) return false;
+    var result=  allFillups.items.filter((f) => {
+      if (vehicleId !== "all" && f.vehicleId !== vehicleId) return false;
       if (
         brand &&
-        !String(f.fuel_brand ?? "")
+        !String(f.brand ?? "")
           .toLowerCase()
           .includes(brand.toLowerCase())
       )
         return false;
       if (
         grade &&
-        !String(f.fuel_grade ?? "")
+        !String(f.grade ?? "")
           .toLowerCase()
           .includes(grade.toLowerCase())
       )
         return false;
       if (
         station &&
-        !String(f.station_name ?? "")
+        !String(f.station ?? "")
           .toLowerCase()
           .includes(station.toLowerCase())
       )
@@ -90,45 +92,52 @@ export default function History() {
       if (toDate && d > toDate) return false;
       return true;
     });
+
+    console.log(result);
+    return result;
   }, [allFillups, vehicleId, brand, grade, station, from, to]);
 
   const computed = useMemo(() => {
-    const nameById = new Map(vehicles.map((v) => [v.id, v.name]));
+    if (!filtered || filtered.length === 0 || !vehicles) return [];
+    // add vehicle name lookup
+    const nameById = new Map(vehicles.map((v) => [v.id, v.label]));
     const scoped = filtered.map((f) => ({
       ...f,
-      vehicleName: nameById.get(f.vehicle_id) || "—",
+      vehicleName: nameById.get(f.vehicleId) || "—",
     }));
 
     const grouped = {};
     for (const f of scoped) {
-      grouped[f.vehicle_id] ??= [];
-      grouped[f.vehicle_id].push(f);
+      grouped[f.vehicleId] ??= [];
+      grouped[f.vehicleId].push(f);
     }
 
     for (const vid of Object.keys(grouped)) {
       grouped[vid].sort((a, b) => new Date(a.date) - new Date(b.date));
       let prev = null;
       for (const f of grouped[vid]) {
-        // canonical unit_price per L
-        f.unit_price = round(Number(f.total_amount) / Number(f.liters), 2);
-        if (prev && f.odometer_km > prev.odometer_km) {
-          const dist = f.odometer_km - prev.odometer_km; // km
-          f.distance_since_last = dist;
-          f.cost_per_km = round(Number(f.total_amount) / dist, 2);
-          f.consumption_l_per_100km = round((Number(f.liters) / dist) * 100, 1);
+        // canonical unitPrice per L
+        f.unitPrice = round(Number(f.totalAmount) / Number(f.liters), 2);
+        if (prev && f.odometerKm > prev.odometerKm) {
+          const dist = f.odometerKm - prev.odometerKm; // km
+          f.distanceSinceLastKm = dist;
+          f.costPerKm = round(Number(f.totalAmount) / dist, 2);
+          f.consumptionLPer100Km = round((Number(f.liters) / dist) * 100, 1);
         } else {
-          f.distance_since_last = null;
-          f.cost_per_km = null;
-          f.consumption_l_per_100km = null;
+          f.distanceSinceLastKm = null;
+          f.costPerKm = null;
+          f.consumptionLPer100Km = null;
         }
         prev = f;
       }
     }
 
     // sort desc by date
-    return Object.values(grouped)
+    var result = Object.values(grouped)
       .flat()
       .sort((a, b) => new Date(b.date) - new Date(a.date));
+      console.log(result);
+    return result;
   }, [filtered, vehicles]);
 
   // reset pagination when filters change
@@ -137,33 +146,39 @@ export default function History() {
   }, [vehicleId, brand, grade, station, from, to]);
 
   // page slice
-  const visible = useMemo(
-    () => computed.slice(0, page * pageSize),
-    [computed, page]
+  const visible = useMemo(()=>{
+    if(!computed) return [];
+    // console.log("computed",computed);
+    // console.log("page",page);
+    // console.log("pageSize",pageSize);
+    var result=  computed.slice(0, page * pageSize);
+    // console.log(result);
+    return result;
+  },[computed, page]
   );
 
   const summary = useMemo(() => {
     if (!computed.length) return null;
 
     const totalSpend = computed.reduce(
-      (a, f) => a + Number(f.total_amount || 0),
+      (a, f) => a + Number(f.totalAmount || 0),
       0
     );
 
     const distances = computed
-      .filter((f) => f.distance_since_last)
-      .map((f) => f.distance_since_last);
+      .filter((f) => f.distanceSinceLastKm)
+      .map((f) => f.distanceSinceLastKm);
     const totalDistanceKm = distances.reduce((a, b) => a + b, 0);
     const totalDistanceDisp =
       distanceUnit === "mi"
         ? Math.round(kmToMi(totalDistanceKm))
         : Math.round(totalDistanceKm);
 
-    const l100Rows = computed.filter((f) => f.consumption_l_per_100km != null);
-    const cpkRows = computed.filter((f) => f.cost_per_km != null);
+    const l100Rows = computed.filter((f) => f.consumptionLPer100Km != null);
+    const cpkRows = computed.filter((f) => f.costPerKm != null);
 
     const avgL100 = l100Rows.length
-      ? l100Rows.reduce((a, f) => a + f.consumption_l_per_100km, 0) /
+      ? l100Rows.reduce((a, f) => a + f.consumptionLPer100Km, 0) /
         l100Rows.length
       : null;
     const avgEffDisp =
@@ -174,7 +189,7 @@ export default function History() {
         : null;
 
     const avgCostKm = cpkRows.length
-      ? cpkRows.reduce((a, f) => a + f.cost_per_km, 0) / cpkRows.length
+      ? cpkRows.reduce((a, f) => a + f.costPerKm, 0) / cpkRows.length
       : null;
     const avgCostDistDisp =
       avgCostKm != null
@@ -190,7 +205,7 @@ export default function History() {
     setEditingId(row.id);
     setEdit({
       date: row.date,
-      odometer_km: row.odometer_km,
+      odometerKm: row.odometerKm,
       station_name: row.station_name || "",
       fuel_brand: row.fuel_brand || "",
       fuel_grade: row.fuel_grade || "",
@@ -210,22 +225,22 @@ export default function History() {
     if (String(edit.notes).length > 500)
       return alert("Notes must be ≤ 500 chars.");
 
-    await api.put(`/fillups/${id}`, {
+    await api.put(`/FuelEntries/${id}`, {
       ...edit,
-      odometer_km: Number(edit.odometer_km),
+      odometerKm: Number(edit.odometerKm),
       liters: Number(edit.liters),
       total_amount: Number(edit.total_amount),
     });
     setEditingId(null);
     setEdit(null);
-    const { data } = await api.get("/fillups");
+    const { data } = await api.get("/FuelEntries");
     setAllFillups(data);
   }
 
   async function remove(id) {
     if (!confirm("Delete this fill-up?")) return;
-    await api.delete(`/fillups/${id}`);
-    const { data } = await api.get("/fillups");
+    await api.delete(`/FuelEntries/${id}`);
+    const { data } = await api.get("/FuelEntries");
     setAllFillups(data);
   }
 
@@ -343,48 +358,49 @@ export default function History() {
             </tr>
           </thead>
           <tbody>
-            {visible.map((f) => {
+            
+            {Array.isArray(visible) && visible.length>0 && visible.map((f) => {
               // display conversions
               const volDisp =
                 volumeUnit === "gal" ? lToGal(f.liters) : f.liters;
-              const totalDisp = money(f.total_amount, currency);
+              const totalDisp = money(f.totalAmount, currency);
               const unitPriceDisp =
-                f.unit_price != null
+                f.unitPrice != null
                   ? new Intl.NumberFormat(undefined, {
                       style: "currency",
                       currency,
                       maximumFractionDigits: priceDecimals,
                     }).format(
                       volumeUnit === "gal"
-                        ? f.unit_price * L_PER_GAL
-                        : f.unit_price
+                        ? f.unitPrice * L_PER_GAL
+                        : f.unitPrice
                     )
                   : null;
 
               const distDisp =
-                f.distance_since_last != null
+                f.distanceSinceLastKm != null
                   ? distanceUnit === "mi"
-                    ? kmToMi(f.distance_since_last)
-                    : f.distance_since_last
+                    ? kmToMi(f.distanceSinceLastKm)
+                    : f.distanceSinceLastKm
                   : null;
 
               const effDisp =
-                f.consumption_l_per_100km != null
+                f.consumptionLPer100Km != null
                   ? efficiencyUnit === "mpg"
-                    ? lPer100kmToMpg(f.consumption_l_per_100km)
-                    : f.consumption_l_per_100km
+                    ? lPer100kmToMpg(f.consumptionLPer100Km)
+                    : f.consumptionLPer100Km
                   : null;
 
               const costPerDistDisp =
-                f.cost_per_km != null
+                f.costPerKm != null
                   ? new Intl.NumberFormat(undefined, {
                       style: "currency",
                       currency,
                       maximumFractionDigits: 2,
                     }).format(
                       distanceUnit === "mi"
-                        ? f.cost_per_km * KM_PER_MILE
-                        : f.cost_per_km
+                        ? f.costPerKm * KM_PER_MILE
+                        : f.costPerKm
                     )
                   : null;
 
@@ -395,9 +411,10 @@ export default function History() {
                       <td className="p-2">{f.date}</td>
                       <td className="p-2">{f.vehicleName}</td>
                       <td className="p-2">
-                        {distDisp != null
+                        {f.odometerKm}
+                        {/* {distDisp != null
                           ? num(distDisp, 0)
-                          : num(f.odometer_km, 0)}
+                          : num(f.odometerKm, 0)} */}
                       </td>
                       <td className="p-2">{num(volDisp, 2)}</td>
                       <td className="p-2">{totalDisp}</td>
@@ -440,9 +457,9 @@ export default function History() {
                         <input
                           className="border rounded p-2"
                           placeholder="Odometer"
-                          value={edit.odometer_km}
+                          value={edit.odometerKm}
                           onChange={(e) =>
-                            setEdit({ ...edit, odometer_km: e.target.value })
+                            setEdit({ ...edit, odometerKm: e.target.value })
                           }
                         />
                         <input
@@ -547,7 +564,7 @@ export default function History() {
               </tr>
             )}
 
-            {visible.length === 0 && (
+            {Array.isArray(visible) && visible.length ===0 && (
               <tr>
                 <td className="p-4 text-gray-500" colSpan={10}>
                   No entries match the filters.
@@ -559,7 +576,7 @@ export default function History() {
       </div>
 
       {/* Pagination: Load more */}
-      {computed.length > visible.length && (
+      {computed.length > (Array.isArray(visible) ? visible.length : 0) && (
         <div className="flex justify-center my-3">
           <button
             onClick={() => setPage((p) => p + 1)}

@@ -4,8 +4,8 @@ import { useAuthStore } from "../store/authStore";
 
 export default function LoginPage() {
   const { signIn, loading, error } = useAuthStore();
-  const [email, setEmail] = useState("test@example.com");
-  const [password, setPassword] = useState("demo123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const nav = useNavigate();
 
   async function onSubmit(e) {

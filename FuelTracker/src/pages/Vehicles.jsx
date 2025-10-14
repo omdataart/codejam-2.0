@@ -5,11 +5,11 @@ export default function Vehicles() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
-    name: "",
+    label: "",
     make: "",
     model: "",
     year: "",
-    fuel_type: "",
+    fuelType: "",
   });
   const [editingId, setEditingId] = useState(null);
   const [edit, setEdit] = useState(null);
@@ -19,7 +19,8 @@ export default function Vehicles() {
     try {
       setLoading(true);
       const { data } = await api.get("/vehicles");
-      setList(data);
+      
+      setList(data.data || []);
       setError("");
     } catch (e) {
       setError(e?.response?.data?.message || e.message || "Failed to load");
@@ -33,37 +34,38 @@ export default function Vehicles() {
 
   async function add(e) {
     e.preventDefault();
-    if (!form.name.trim()) return alert("Name is required");
+    if (!form.label.trim()) return alert("Name is required");
     await api.post("/vehicles", {
-      name: form.name.trim(),
+      label: form.label.trim(),
       make: form.make || "",
       model: form.model || "",
       year: form.year ? Number(form.year) : null,
-      fuel_type: form.fuel_type || "",
+      fuelType: form.fuelType || "",
     });
-    setForm({ name: "", make: "", model: "", year: "", fuel_type: "" });
+    setForm({ label: "", make: "", model: "", year: "", fuelType: "" });
     load();
   }
 
   function startEdit(v) {
     setEditingId(v.id);
+    console.log(v);
     setEdit({
-      name: v.name || "",
+      label: v.label || "",
       make: v.make || "",
       model: v.model || "",
       year: v.year || "",
-      fuel_type: v.fuel_type || "",
+      fuelType: v.fuelType || "",
     });
   }
 
   async function saveEdit(id) {
-    if (!edit.name.trim()) return alert("Name is required");
+    if (!edit.label.trim()) return alert("Name is required");
     await api.put(`/vehicles/${id}`, {
-      name: edit.name.trim(),
+      label: edit.label.trim(),
       make: edit.make || "",
       model: edit.model || "",
       year: edit.year ? Number(edit.year) : null,
-      fuel_type: edit.fuel_type || "",
+      fuelType: edit.fuelType || "",
     });
     setEditingId(null);
     setEdit(null);
@@ -77,7 +79,7 @@ export default function Vehicles() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
+    <div className="mx-auto max-w-7xl p-6">
       <h2 className="text-2xl font-semibold mb-4">Vehicles</h2>
       {error && <p className="text-red-600 mb-3">{error}</p>}
 
@@ -86,8 +88,8 @@ export default function Vehicles() {
         <input
           className="border rounded p-2"
           placeholder="Name *"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          value={form.label}
+          onChange={(e) => setForm({ ...form, label: e.target.value })}
         />
         <input
           className="border rounded p-2"
@@ -111,8 +113,8 @@ export default function Vehicles() {
           <input
             className="border rounded p-2 w-full"
             placeholder="Fuel type"
-            value={form.fuel_type}
-            onChange={(e) => setForm({ ...form, fuel_type: e.target.value })}
+            value={form.fuelType}
+            onChange={(e) => setForm({ ...form, fuelType: e.target.value })}
           />
           <button className="bg-black text-white rounded px-3">Add</button>
         </div>
@@ -128,13 +130,13 @@ export default function Vehicles() {
               {editingId !== v.id ? (
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="font-medium">{v.name}</p>
+                    <p className="font-medium">{v.label}</p>
                     <p className="text-sm text-gray-600">
                       {[v.make, v.model, v.year].filter(Boolean).join(" ")}
                     </p>
-                    {v.fuel_type && (
+                    {v.fuelType && (
                       <p className="text-xs text-gray-500">
-                        Fuel: {v.fuel_type}
+                        Fuel: {v.fuelType}
                       </p>
                     )}
                   </div>
@@ -155,8 +157,8 @@ export default function Vehicles() {
                   <input
                     className="border rounded p-2"
                     placeholder="Name *"
-                    value={edit.name}
-                    onChange={(e) => setEdit({ ...edit, name: e.target.value })}
+                    value={edit.label}
+                    onChange={(e) => setEdit({ ...edit, label: e.target.value })}
                   />
                   <input
                     className="border rounded p-2"
@@ -182,9 +184,9 @@ export default function Vehicles() {
                     <input
                       className="border rounded p-2 w-full"
                       placeholder="Fuel type"
-                      value={edit.fuel_type}
+                      value={edit.fuelType}
                       onChange={(e) =>
-                        setEdit({ ...edit, fuel_type: e.target.value })
+                        setEdit({ ...edit, fuelType: e.target.value })
                       }
                     />
                     <button

@@ -29,7 +29,7 @@ import {
 export default function Dashboard() {
   const [vehicles, setVehicles] = useState([]);
   const [fills, setFills] = useState([]);
-  const [vehicleId, setVehicleId] = useState("all");
+  const [vehicleId, setVehicleId] = useState(0);
 
   const [period, setPeriod] = useState("30"); // "30" | "90" | "ytd" | "custom"
   const [customFrom, setCustomFrom] = useState(""); // yyyy-mm-dd
@@ -77,16 +77,16 @@ export default function Dashboard() {
       setLoading(true);
       const [v, f] = await Promise.all([
         api.get("/vehicles"),
-        api.get("/fillups"),
+        api.get("/FuelEntries"),
       ]);
-      setVehicles(v.data);
-      setFills(f.data);
+      setVehicles(v.data.data || []);
+      setFills(f.data.data.items || []);
       setLoading(false);
     })();
   }, []);
 
   const { cards, series } = useMemo(() => {
-    if (!fills.length)
+    if (fills && !fills.length )
       return { cards: null, series: { costPerL: [], l100: [] } };
 
     const range = periodRange(period, customFrom, customTo);
@@ -98,7 +98,7 @@ export default function Dashboard() {
     const scoped = fills.filter((f) => {
       const d = new Date(f.date);
       const inRange = d >= new Date(from.toDateString()) && d <= to;
-      const vMatch = vehicleId === "all" || f.vehicle_id === vehicleId;
+      const vMatch = vehicleId === 0 || f.vehicleId === vehicleId;
       return inRange && vMatch;
     });
 
@@ -108,8 +108,8 @@ export default function Dashboard() {
     // group by vehicle to compute distance_since_last
     const byVeh = new Map();
     for (const f of scoped) {
-      if (!byVeh.has(f.vehicle_id)) byVeh.set(f.vehicle_id, []);
-      byVeh.get(f.vehicle_id).push({ ...f });
+      if (!byVeh.has(f.vehicleId)) byVeh.set(f.vehicleId, []);
+      byVeh.get(f.vehicleId).push({ ...f });
     }
 
     let totalSpend = 0;
@@ -123,9 +123,9 @@ export default function Dashboard() {
       arr.sort((a, b) => new Date(a.date) - new Date(b.date));
       let prev = null;
       for (const f of arr) {
-        const unit = Number(f.total_amount) / Number(f.liters); // per L canonical
+        const unit = Number(f.totalAmount) / Number(f.liters); // per L canonical
         if (isFinite(unit)) unitPrices.push(unit);
-        totalSpend += Number(f.total_amount);
+        totalSpend += Number(f.totalAmount);
 
         // add cost/L point (always)
         points.push({
@@ -134,11 +134,11 @@ export default function Dashboard() {
           l100: null,
         });
 
-        if (prev && f.odometer_km > prev.odometer_km) {
-          const distKm = f.odometer_km - prev.odometer_km;
+        if (prev && f.odometerKm > prev.odometerKm) {
+          const distKm = f.odometerKm - prev.odometerKm;
           totalDistance += distKm;
           const l100 = (Number(f.liters) / distKm) * 100;
-          const cpk = Number(f.total_amount) / distKm; // cost per km
+          const cpk = Number(f.totalAmount) / distKm; // cost per km
           if (isFinite(l100)) perFillL100.push(l100);
           if (isFinite(cpk)) perFillCostPerKm.push(cpk);
 
@@ -180,10 +180,12 @@ export default function Dashboard() {
       avgDistancePerDay: totalDistance / days, // km/day
     };
 
-    return {
+    var result= {
       cards: { ...kpis, empty: false },
       series: { costPerL, l100: l100Series },
     };
+    console.log(result);
+    return result;
   }, [fills, vehicleId, period, customFrom, customTo]);
 
   const showCustomMsg =
@@ -199,12 +201,12 @@ export default function Dashboard() {
         <select
           className="border rounded p-2"
           value={vehicleId}
-          onChange={(e) => setVehicleId(e.target.value)}
+          onChange={(e) => setVehicleId(Number(e.target.value))}
         >
-          <option value="all">All vehicles</option>
+          <option value={0}>All vehicles</option>
           {vehicles.map((v) => (
             <option key={v.id} value={v.id}>
-              {v.name}
+              {v.label}
             </option>
           ))}
         </select>

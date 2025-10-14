@@ -11,7 +11,7 @@ export const useAuthStore = create(
 
       signIn: async ({ email, password }) => {
         set({ loading: true, error: null });
-        try {
+        try {         
           await api.post("/auth/login", { email, password });
           const { data } = await api.get("/auth/me");
           set({ user: data, loading: false });
@@ -26,7 +26,7 @@ export const useAuthStore = create(
       signUp: async ({ email, password, displayName }) => {
         set({ loading: true, error: null });
         try {
-          const { data } = await api.post("/auth/signup", {
+          const { data } = await api.post("/auth/register", {
             email,
             password,
             displayName,
