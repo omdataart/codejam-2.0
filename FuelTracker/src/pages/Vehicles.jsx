@@ -4,6 +4,14 @@ import api from "../lib/api";
 export default function Vehicles() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Add form state
+  const currentYear = new Date().getFullYear();
+  const YEAR_MIN = 1950;
+  const YEAR_MAX = currentYear + 1;
+  const FUEL_TYPES = ["Petrol", "Diesel", "CNG", "Electric", "Hybrid"];
+
   const [form, setForm] = useState({
     label: "",
     make: "",
@@ -11,13 +19,22 @@ export default function Vehicles() {
     year: "",
     fuelType: "",
   });
+  const [touched, setTouched] = useState({});
+  const [errors, setErrors] = useState({});
+  const [showAdd, setShowAdd] = useState(false);
+
+  // Edit row state
   const [editingId, setEditingId] = useState(null);
   const [edit, setEdit] = useState(null);
-  const [error, setError] = useState("");
-  const [showAdd, setShowAdd] = useState(false);
 
   // Filters
   const [search, setSearch] = useState("");
+
+  // Normalizer: trims, lowercases, and collapses spaces
+  function norm(s = "") {
+    return s.trim().toLowerCase().replace(/\s+/g, " ");
+  }
+  // Store normalized brand key
   const [activeBrand, setActiveBrand] = useState("");
 
   async function load() {
@@ -37,17 +54,75 @@ export default function Vehicles() {
     load();
   }, []);
 
+  // ---------- Validation ----------
+  function validate(values) {
+    const errs = {};
+    // Name
+    if (!values.label.trim()) errs.label = "Name is required.";
+    else if (values.label.trim().length < 2)
+      errs.label = "Name must be at least 2 characters.";
+
+    // Make
+    if (!values.make.trim()) errs.make = "Make is required.";
+
+    // Model
+    if (!values.model.trim()) errs.model = "Model is required.";
+
+    // Year
+    const y = String(values.year).trim();
+    if (!y) errs.year = "Year is required.";
+    else if (!/^\d{4}$/.test(y)) errs.year = "Enter a 4-digit year.";
+    else {
+      const yn = Number(y);
+      if (yn < YEAR_MIN || yn > YEAR_MAX)
+        errs.year = `Year must be between ${YEAR_MIN} and ${YEAR_MAX}.`;
+    }
+
+    // Fuel Type
+    if (!values.fuelType) errs.fuelType = "Fuel type is required.";
+    else if (!FUEL_TYPES.includes(values.fuelType))
+      errs.fuelType = "Choose a valid fuel type.";
+
+    return errs;
+  }
+
+  useEffect(() => {
+    setErrors(validate(form));
+  }, [form]);
+
+  const isAddDisabled = Object.keys(errors).length > 0;
+
+  function markTouched(field) {
+    setTouched((t) => ({ ...t, [field]: true }));
+  }
+
+  function handleChange(field, value) {
+    setForm((f) => ({ ...f, [field]: value }));
+  }
+
   async function add(e) {
     e.preventDefault();
-    if (!form.label.trim()) return alert("Name is required");
+    const v = validate(form);
+    setErrors(v);
+    // mark all touched to show inline messages if user tries to submit early
+    setTouched({
+      label: true,
+      make: true,
+      model: true,
+      year: true,
+      fuelType: true,
+    });
+    if (Object.keys(v).length) return;
+
     await api.post("/vehicles", {
       label: form.label.trim(),
-      make: form.make || "",
-      model: form.model || "",
-      year: form.year ? Number(form.year) : null,
-      fuelType: form.fuelType || "",
+      make: form.make.trim(),
+      model: form.model.trim(),
+      year: Number(form.year),
+      fuelType: form.fuelType,
     });
     setForm({ label: "", make: "", model: "", year: "", fuelType: "" });
+    setTouched({});
     setShowAdd(false);
     load();
   }
@@ -83,15 +158,36 @@ export default function Vehicles() {
     load();
   }
 
+  // ---------- Brand chips derived from data (with counts) ----------
+  const brandOptions = useMemo(() => {
+    const map = new Map(); // key: normalized make, value: { label, count }
+    for (const v of list) {
+      const raw = (v.make ?? "").trim();
+      if (!raw) continue;
+      const key = norm(raw);
+      if (!map.has(key)) map.set(key, { label: raw, count: 0 });
+      map.get(key).count += 1;
+    }
+    return Array.from(map.entries())
+      .map(([key, val]) => ({ key, label: val.label, count: val.count }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [list]);
+
+  // Clear stale activeBrand if data changes and brand disappears
+  useEffect(() => {
+    if (!activeBrand) return;
+    const exists = brandOptions.some((b) => b.key === activeBrand);
+    if (!exists) setActiveBrand("");
+  }, [brandOptions, activeBrand]);
+
   // ---------- Client-side filtering ----------
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase();
     return list.filter((v) => {
-      if (
-        activeBrand &&
-        String(v.make || "").toLowerCase() !== activeBrand.toLowerCase()
-      ) {
-        return false;
+      // brand filter via normalized key
+      if (activeBrand) {
+        const makeKey = norm(v.make || "");
+        if (makeKey !== activeBrand) return false;
       }
       if (!s) return true;
       const hay = [
@@ -107,12 +203,6 @@ export default function Vehicles() {
       return hay.includes(s);
     });
   }, [list, search, activeBrand]);
-
-  const brands = ["Toyota", "Honda", "Ford", "Hyundai", "Maruti"];
-
-  function toggleBrand(b) {
-    setActiveBrand((prev) => (prev === b ? "" : b));
-  }
 
   function clearFilters() {
     setSearch("");
@@ -189,14 +279,29 @@ export default function Vehicles() {
             )}
           </div>
 
+          {/* Dynamic brand chips with counts */}
           <div className="mt-3 flex flex-wrap gap-2">
-            {brands.map((b) => {
-              const isActive = activeBrand === b;
+            <button
+              type="button"
+              onClick={() => setActiveBrand("")}
+              aria-pressed={activeBrand === ""}
+              className={[
+                "rounded-full px-3 py-1 text-xs font-medium transition ring-1",
+                activeBrand === ""
+                  ? "bg-blue-600 text-white ring-blue-600 shadow-sm shadow-blue-600/20"
+                  : "bg-slate-50 text-slate-700 ring-slate-200 hover:bg-slate-100",
+              ].join(" ")}
+            >
+              All {brandOptions.length ? `(${list.length})` : ""}
+            </button>
+
+            {brandOptions.map(({ key, label, count }) => {
+              const isActive = activeBrand === key;
               return (
                 <button
-                  key={b}
+                  key={key}
                   type="button"
-                  onClick={() => toggleBrand(b)}
+                  onClick={() => setActiveBrand(isActive ? "" : key)}
                   aria-pressed={isActive}
                   className={[
                     "rounded-full px-3 py-1 text-xs font-medium transition ring-1",
@@ -204,8 +309,9 @@ export default function Vehicles() {
                       ? "bg-blue-600 text-white ring-blue-600 shadow-sm shadow-blue-600/20"
                       : "bg-slate-50 text-slate-700 ring-slate-200 hover:bg-slate-100",
                   ].join(" ")}
+                  title={`${label} (${count})`}
                 >
-                  {b}
+                  {label} ({count})
                 </button>
               );
             })}
@@ -282,9 +388,9 @@ export default function Vehicles() {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid gap-2 md:grid-cols-5">
+                  <div className="grid gap-2 md:grid-cols-6">
                     <input
-                      className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                      className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 md:col-span-2"
                       placeholder="Name *"
                       value={edit.label}
                       onChange={(e) =>
@@ -294,7 +400,7 @@ export default function Vehicles() {
                     />
                     <input
                       className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                      placeholder="Make"
+                      placeholder="Make *"
                       value={edit.make}
                       onChange={(e) =>
                         setEdit({ ...edit, make: e.target.value })
@@ -302,29 +408,32 @@ export default function Vehicles() {
                     />
                     <input
                       className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                      placeholder="Model"
+                      placeholder="Model *"
                       value={edit.model}
                       onChange={(e) =>
                         setEdit({ ...edit, model: e.target.value })
                       }
                     />
                     <input
+                      type="number"
+                      min={YEAR_MIN}
+                      max={YEAR_MAX}
                       className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                      placeholder="Year"
+                      placeholder="Year *"
                       value={edit.year}
                       onChange={(e) =>
                         setEdit({ ...edit, year: e.target.value })
                       }
                     />
-                    <div className="flex gap-2">
-                      <input
-                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                        placeholder="Fuel type"
-                        value={edit.fuelType}
-                        onChange={(e) =>
-                          setEdit({ ...edit, fuelType: e.target.value })
-                        }
-                      />
+                    <input
+                      className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
+                      placeholder="Fuel type *"
+                      value={edit.fuelType}
+                      onChange={(e) =>
+                        setEdit({ ...edit, fuelType: e.target.value })
+                      }
+                    />
+                    <div className="flex gap-2 md:col-span-6">
                       <button
                         className="rounded-xl bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
                         onClick={() => saveEdit(v.id)}
@@ -358,7 +467,7 @@ export default function Vehicles() {
         )}
       </div>
 
-      {/* 🪟 Modal Add Form */}
+      {/* 🪟 Modal Add Form (with full validation) */}
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-lg">
@@ -367,56 +476,181 @@ export default function Vehicles() {
                 Add New Vehicle
               </h3>
               <button
-                onClick={() => setShowAdd(false)}
+                onClick={() => {
+                  setShowAdd(false);
+                  setTouched({});
+                }}
                 className="text-slate-500 hover:text-slate-700 text-xl leading-none"
+                aria-label="Close"
               >
                 ×
               </button>
             </div>
 
-            <form onSubmit={add} className="grid gap-3 sm:grid-cols-2">
-              <input
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                placeholder="Name *"
-                value={form.label}
-                onChange={(e) => setForm({ ...form, label: e.target.value })}
-                required
-              />
-              <input
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                placeholder="Make"
-                value={form.make}
-                onChange={(e) => setForm({ ...form, make: e.target.value })}
-              />
-              <input
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                placeholder="Model"
-                value={form.model}
-                onChange={(e) => setForm({ ...form, model: e.target.value })}
-              />
-              <input
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600"
-                placeholder="Year"
-                value={form.year}
-                onChange={(e) => setForm({ ...form, year: e.target.value })}
-              />
-              <input
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 sm:col-span-2"
-                placeholder="Fuel type"
-                value={form.fuelType}
-                onChange={(e) => setForm({ ...form, fuelType: e.target.value })}
-              />
-              <div className="flex justify-end gap-2 sm:col-span-2 mt-2">
+            <form onSubmit={add} noValidate>
+              {/* Name */}
+              <div className="grid gap-1 mb-3">
+                <label className="text-xs font-medium text-slate-700">
+                  Name *
+                </label>
+                <input
+                  className={`rounded-xl border px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 ${
+                    touched.label && errors.label
+                      ? "border-red-300"
+                      : "border-slate-300"
+                  }`}
+                  placeholder="e.g., My Swift VXI"
+                  value={form.label}
+                  onChange={(e) => handleChange("label", e.target.value)}
+                  onBlur={() => markTouched("label")}
+                  aria-invalid={touched.label && !!errors.label}
+                  aria-describedby={errors.label ? "err-label" : undefined}
+                />
+                {touched.label && errors.label && (
+                  <p id="err-label" className="text-xs text-red-600">
+                    {errors.label}
+                  </p>
+                )}
+              </div>
+
+              {/* Make & Model */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="grid gap-1">
+                  <label className="text-xs font-medium text-slate-700">
+                    Make *
+                  </label>
+                  <input
+                    className={`rounded-xl border px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 ${
+                      touched.make && errors.make
+                        ? "border-red-300"
+                        : "border-slate-300"
+                    }`}
+                    placeholder="e.g., Maruti"
+                    value={form.make}
+                    onChange={(e) => handleChange("make", e.target.value)}
+                    onBlur={() => markTouched("make")}
+                    aria-invalid={touched.make && !!errors.make}
+                    aria-describedby={errors.make ? "err-make" : undefined}
+                  />
+                  {touched.make && errors.make && (
+                    <p id="err-make" className="text-xs text-red-600">
+                      {errors.make}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-1">
+                  <label className="text-xs font-medium text-slate-700">
+                    Model *
+                  </label>
+                  <input
+                    className={`rounded-xl border px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 ${
+                      touched.model && errors.model
+                        ? "border-red-300"
+                        : "border-slate-300"
+                    }`}
+                    placeholder="e.g., Swift"
+                    value={form.model}
+                    onChange={(e) => handleChange("model", e.target.value)}
+                    onBlur={() => markTouched("model")}
+                    aria-invalid={touched.model && !!errors.model}
+                    aria-describedby={errors.model ? "err-model" : undefined}
+                  />
+                  {touched.model && errors.model && (
+                    <p id="err-model" className="text-xs text-red-600">
+                      {errors.model}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Year & Fuel Type */}
+              <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                <div className="grid gap-1">
+                  <label className="text-xs font-medium text-slate-700">
+                    Year *
+                  </label>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={YEAR_MIN}
+                    max={YEAR_MAX}
+                    className={`rounded-xl border px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 ${
+                      touched.year && errors.year
+                        ? "border-red-300"
+                        : "border-slate-300"
+                    }`}
+                    placeholder={`${YEAR_MIN}–${YEAR_MAX}`}
+                    value={form.year}
+                    onChange={(e) => handleChange("year", e.target.value)}
+                    onBlur={() => markTouched("year")}
+                    aria-invalid={touched.year && !!errors.year}
+                    aria-describedby={errors.year ? "err-year" : undefined}
+                  />
+                  {touched.year && errors.year && (
+                    <p id="err-year" className="text-xs text-red-600">
+                      {errors.year}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-1">
+                  <label className="text-xs font-medium text-slate-700">
+                    Fuel Type *
+                  </label>
+                  <select
+                    className={`rounded-xl border px-3 py-2 text-sm shadow-sm bg-white focus:ring-2 focus:ring-blue-600 ${
+                      touched.fuelType && errors.fuelType
+                        ? "border-red-300"
+                        : "border-slate-300"
+                    }`}
+                    value={form.fuelType}
+                    onChange={(e) => handleChange("fuelType", e.target.value)}
+                    onBlur={() => markTouched("fuelType")}
+                    aria-invalid={touched.fuelType && !!errors.fuelType}
+                    aria-describedby={errors.fuelType ? "err-fuel" : undefined}
+                  >
+                    <option value="">Select</option>
+                    {FUEL_TYPES.map((ft) => (
+                      <option key={ft} value={ft}>
+                        {ft}
+                      </option>
+                    ))}
+                  </select>
+                  {touched.fuelType && errors.fuelType && (
+                    <p id="err-fuel" className="text-xs text-red-600">
+                      {errors.fuelType}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-end gap-2 mt-5">
                 <button
                   type="button"
-                  onClick={() => setShowAdd(false)}
+                  onClick={() => {
+                    setShowAdd(false);
+                    setTouched({});
+                  }}
                   className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700"
+                  disabled={isAddDisabled}
+                  className={`rounded-xl px-4 py-2 text-sm font-medium text-white shadow-md ${
+                    isAddDisabled
+                      ? "bg-blue-300 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                  aria-disabled={isAddDisabled}
+                  title={
+                    isAddDisabled
+                      ? "Please fix the errors above"
+                      : "Add vehicle"
+                  }
                 >
                   Add
                 </button>
