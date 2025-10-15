@@ -1,0 +1,49 @@
+version: '3.9'
+ 
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: fuel_db
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - fuel_network
+ 
+  api:
+    build:
+      context: ./Fuel_tracker_Management
+      dockerfile: ./API/Dockerfile
+    container_name: fuel_api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__FuelTracker=Server=db,1433;Database=FuelTrackerDB;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - fuel_network
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr > /dev/null 2>&1"  # ✅ Silence logs
+ 
+  frontend:
+    build:
+      context: ./FuelTracker
+      dockerfile: Dockerfile
+      args:
+            VITE_API_BASE_URL: "http://localhost:5000/api"
+    container_name: fuel_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - fuel_network
+networks:
+  fuel_network:
+    driver: bridge
+    
+
+ 

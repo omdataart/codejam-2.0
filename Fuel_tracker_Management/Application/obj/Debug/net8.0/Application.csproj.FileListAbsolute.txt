@@ -1,0 +1,17 @@
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.AssemblyInfoInputs.cache
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.AssemblyInfo.cs
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.csproj.CoreCompileInputs.cache
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Application.deps.json
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Application.dll
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Application.pdb
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Domain.dll
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Infrastructure.dll
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Domain.pdb
+C:\Fuel_tracker_Management\Application\bin\Debug\net8.0\Infrastructure.pdb
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Applicat.44B5EDA2.Up2Date
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.dll
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\refint\Application.dll
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\Application.pdb
+C:\Fuel_tracker_Management\Application\obj\Debug\net8.0\ref\Application.dll

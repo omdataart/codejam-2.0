@@ -1,0 +1,17 @@
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Infrastructure.deps.json
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Infrastructure.runtimeconfig.json
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Infrastructure.dll
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Infrastructure.pdb
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Domain.dll
+C:\Fuel_tracker_Management\Infrastructure\bin\Debug\net8.0\Domain.pdb
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.csproj.AssemblyReference.cache
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.AssemblyInfoInputs.cache
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.AssemblyInfo.cs
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.csproj.CoreCompileInputs.cache
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastr.15EFFBFE.Up2Date
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.dll
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\refint\Infrastructure.dll
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.pdb
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\Infrastructure.genruntimeconfig.cache
+C:\Fuel_tracker_Management\Infrastructure\obj\Debug\net8.0\ref\Infrastructure.dll

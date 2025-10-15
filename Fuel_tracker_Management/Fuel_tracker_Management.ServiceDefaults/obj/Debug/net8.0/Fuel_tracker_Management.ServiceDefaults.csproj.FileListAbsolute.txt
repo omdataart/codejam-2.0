@@ -1,0 +1,12 @@
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\bin\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.deps.json
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\bin\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.dll
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\bin\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.pdb
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.csproj.AssemblyReference.cache
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.AssemblyInfoInputs.cache
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.AssemblyInfo.cs
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.dll
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\refint\Fuel_tracker_Management.ServiceDefaults.dll
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\Fuel_tracker_Management.ServiceDefaults.pdb
+C:\Fuel_tracker_Management\Fuel_tracker_Management.ServiceDefaults\obj\Debug\net8.0\ref\Fuel_tracker_Management.ServiceDefaults.dll

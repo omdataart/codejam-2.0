@@ -1,0 +1,11 @@
+C:\Fuel_tracker_Management\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Fuel_tracker_Management\Domain\bin\Debug\net8.0\Domain.dll
+C:\Fuel_tracker_Management\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.dll
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Fuel_tracker_Management\Domain\obj\Debug\net8.0\ref\Domain.dll

@@ -1,0 +1,945 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Fuel_tracker_Management\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\persistence\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\persistence\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\modules\\dependencymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\modules\\dependencymodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\authlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\authlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\iauthlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\iauthlogrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\ifuelentryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\ifuelentryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\fuelentryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\fuelentryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\entities\\authevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\authevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6B1B8DA6-5596-4E96-870A-A5103A2F90B4}|Fuel_tracker_Management.AppHost\\Fuel_tracker_Management.AppHost.csproj|c:\\fuel_tracker_management\\fuel_tracker_management.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6B1B8DA6-5596-4E96-870A-A5103A2F90B4}|Fuel_tracker_Management.AppHost\\Fuel_tracker_Management.AppHost.csproj|solutionrelative:fuel_tracker_management.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\controllers\\statscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\controllers\\statscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\vehiclerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\vehiclerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\ivehiclerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\ivehiclerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\controllers\\fuelentriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\controllers\\fuelentriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\sessionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\sessionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\vehicleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\vehicleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\createuserrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\createuserrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\assemblymarker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\assemblymarker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\createfuelentryrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\createfuelentryrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\profiledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\profiledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\statsdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\statsdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\statsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\statsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\istatsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\istatsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\fuelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\fuelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\ifuelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\ifuelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\entities\\fuelentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\fuelentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\fueldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\fueldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\controllers\\vehiclescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\controllers\\vehiclescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\vehicledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\vehicledtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\repositories\\statsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\statsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\istatsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\istatsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\dto\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\dto\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\services\\ivehicleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\services\\ivehicleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\persistence\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\persistence\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\repositories\\interfaces\\isessionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\repositories\\interfaces\\isessionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\entities\\session.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\session.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|c:\\fuel_tracker_management\\domain\\entities\\vehicle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F9E289B-5822-4A07-A7CD-63CFA1DF7929}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\vehicle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\updateprofilerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\updateprofilerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\loginrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\loginrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\fuelqueryrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\fuelqueryrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\validators\\createvehiclerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\validators\\createvehiclerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|c:\\fuel_tracker_management\\api\\middlewares\\errorhandlingmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BDCE4395-C507-454F-B082-C1ECE96A3CD8}|API\\API.csproj|solutionrelative:api\\middlewares\\errorhandlingmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|c:\\fuel_tracker_management\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{DB86A305-2370-48C3-8F6D-FA45E44CF0C1}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|c:\\fuel_tracker_management\\application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{791D99C9-9A51-4CEA-AA70-8BEA34E82F77}|Application\\Application.csproj|solutionrelative:application\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "API\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAYwDQAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:48:17.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\IAuthService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\IAuthService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\IAuthService.cs",
+              "RelativeToolTip": "Application\\Services\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:45:47.842Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\AuthService.cs",
+              "RelativeToolTip": "Application\\Services\\AuthService.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACwAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:04:22.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Persistence\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Persistence\\AppDbContext.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Persistence\\AppDbContext.cs",
+              "RelativeToolTip": "Infrastructure\\Persistence\\AppDbContext.cs",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAwwFsAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:43:47.112Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProfileController.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Controllers\\ProfileController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\ProfileController.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Controllers\\ProfileController.cs",
+              "RelativeToolTip": "API\\Controllers\\ProfileController.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAC4AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:00:56.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DependencyModule.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Modules\\DependencyModule.cs",
+              "RelativeDocumentMoniker": "API\\Modules\\DependencyModule.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Modules\\DependencyModule.cs",
+              "RelativeToolTip": "API\\Modules\\DependencyModule.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABsAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:38:25.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FuelEntryRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\FuelEntryRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\FuelEntryRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\FuelEntryRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\FuelEntryRepository.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAgwA0AAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T10:15:57.336Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AuthLogRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\AuthLogRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\AuthLogRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\AuthLogRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\AuthLogRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T09:40:24.015Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAvwDQAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:30:04.362Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IAuthLogRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IAuthLogRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\IAuthLogRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IAuthLogRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\IAuthLogRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T09:40:11.407Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "IFuelEntryRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IFuelEntryRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\IFuelEntryRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IFuelEntryRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\IFuelEntryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwBIAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:36:05.264Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AuthEvent.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Entities\\AuthEvent.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\AuthEvent.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Entities\\AuthEvent.cs",
+              "RelativeToolTip": "Domain\\Entities\\AuthEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T09:33:25.138Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AppHost.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Fuel_tracker_Management.AppHost\\AppHost.cs",
+              "RelativeDocumentMoniker": "Fuel_tracker_Management.AppHost\\AppHost.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Fuel_tracker_Management.AppHost\\AppHost.cs",
+              "RelativeToolTip": "Fuel_tracker_Management.AppHost\\AppHost.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:21:11.381Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ProfileService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\ProfileService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\ProfileService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\ProfileService.cs",
+              "RelativeToolTip": "Application\\Services\\ProfileService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T07:46:05.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "StatsController.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Controllers\\StatsController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\StatsController.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Controllers\\StatsController.cs",
+              "RelativeToolTip": "API\\Controllers\\StatsController.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwBgAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:00:38.723Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "IVehicleRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IVehicleRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\IVehicleRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IVehicleRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\IVehicleRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwBMAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:57:44.828Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "VehicleRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\VehicleRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\VehicleRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\VehicleRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\VehicleRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAuwDkAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T06:18:03.899Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAwAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T06:16:52.729Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "FuelEntriesController.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Controllers\\FuelEntriesController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\FuelEntriesController.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Controllers\\FuelEntriesController.cs",
+              "RelativeToolTip": "API\\Controllers\\FuelEntriesController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAkwA8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:00:15.144Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "SessionRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\SessionRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\SessionRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\SessionRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\SessionRepository.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwBAAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T06:18:49.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwBQAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:57:06.62Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "VehicleService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\VehicleService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\VehicleService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\VehicleService.cs",
+              "RelativeToolTip": "Application\\Services\\VehicleService.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAcwDgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T09:42:02.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\appsettings.json",
+              "RelativeDocumentMoniker": "API\\appsettings.json",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\appsettings.json",
+              "RelativeToolTip": "API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-14T13:58:04.885Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "CreateUserRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateUserRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\CreateUserRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateUserRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\CreateUserRequestValidator.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAuwA8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:41:59.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "API\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Properties\\launchSettings.json",
+              "RelativeToolTip": "API\\Properties\\launchSettings.json",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-14T14:07:27.975Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "CreateFuelEntryRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateFuelEntryRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\CreateFuelEntryRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateFuelEntryRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\CreateFuelEntryRequestValidator.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAsAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:44:33.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "AssemblyMarker.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\AssemblyMarker.cs",
+              "RelativeDocumentMoniker": "Application\\AssemblyMarker.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\AssemblyMarker.cs",
+              "RelativeToolTip": "Application\\AssemblyMarker.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T10:49:17.339Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ProfileDtos.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\ProfileDtos.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\ProfileDtos.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\ProfileDtos.cs",
+              "RelativeToolTip": "Application\\DTO\\ProfileDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAMAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:55:08.544Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "StatsDtos.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\StatsDtos.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\StatsDtos.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\StatsDtos.cs",
+              "RelativeToolTip": "Application\\DTO\\StatsDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:55:12.132Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "StatsService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\StatsService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\StatsService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\StatsService.cs",
+              "RelativeToolTip": "Application\\Services\\StatsService.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAArwBoAAAC4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T12:40:29.787Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "IFuelService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\IFuelService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\IFuelService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\IFuelService.cs",
+              "RelativeToolTip": "Application\\Services\\IFuelService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:46:16.851Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "IStatsService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\IStatsService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\IStatsService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\IStatsService.cs",
+              "RelativeToolTip": "Application\\Services\\IStatsService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAwAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:47:41.878Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "FuelService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\FuelService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\FuelService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\FuelService.cs",
+              "RelativeToolTip": "Application\\Services\\FuelService.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAiwB4AAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T10:50:04.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "FuelEntry.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Entities\\FuelEntry.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\FuelEntry.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Entities\\FuelEntry.cs",
+              "RelativeToolTip": "Domain\\Entities\\FuelEntry.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAuwBUAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:33:59.828Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "FuelDto.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\FuelDto.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\FuelDto.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\FuelDto.cs",
+              "RelativeToolTip": "Application\\DTO\\FuelDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:55:05Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "VehiclesController.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Controllers\\VehiclesController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\VehiclesController.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Controllers\\VehiclesController.cs",
+              "RelativeToolTip": "API\\Controllers\\VehiclesController.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAqwFgAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:59:42.389Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "VehicleDtos.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\VehicleDtos.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\VehicleDtos.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\VehicleDtos.cs",
+              "RelativeToolTip": "Application\\DTO\\VehicleDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAABxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:55:15.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "IStatsRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IStatsRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\IStatsRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\IStatsRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\IStatsRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T12:38:09.855Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "StatsRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\StatsRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\StatsRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Repositories\\StatsRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\StatsRepository.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAEBVwBEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T12:39:22.785Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "ApiResponse.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\ApiResponse.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\ApiResponse.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\ApiResponse.cs",
+              "RelativeToolTip": "Application\\DTO\\ApiResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T11:49:49.784Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "AuthDtos.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\DTO\\AuthDtos.cs",
+              "RelativeDocumentMoniker": "Application\\DTO\\AuthDtos.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\DTO\\AuthDtos.cs",
+              "RelativeToolTip": "Application\\DTO\\AuthDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAYAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:54:54.471Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "IVehicleService.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Services\\IVehicleService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\IVehicleService.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Services\\IVehicleService.cs",
+              "RelativeToolTip": "Application\\Services\\IVehicleService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:46:02.412Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Persistence\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Persistence\\UnitOfWork.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Persistence\\UnitOfWork.cs",
+              "RelativeToolTip": "Infrastructure\\Persistence\\UnitOfWork.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAUwDkAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:53:00.102Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "IUnitOfWork.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\IUnitOfWork.cs",
+              "RelativeDocumentMoniker": "Domain\\IUnitOfWork.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\IUnitOfWork.cs",
+              "RelativeToolTip": "Domain\\IUnitOfWork.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAjwA0AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T08:08:26.097Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "ISessionRepository.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\ISessionRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Repositories\\Interfaces\\ISessionRepository.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Repositories\\Interfaces\\ISessionRepository.cs",
+              "RelativeToolTip": "Domain\\Repositories\\Interfaces\\ISessionRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:58:17.562Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "Session.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Entities\\Session.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\Session.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Entities\\Session.cs",
+              "RelativeToolTip": "Domain\\Entities\\Session.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:42:54.735Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Entities\\User.cs",
+              "RelativeToolTip": "Domain\\Entities\\User.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwBMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:41:07.207Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "Vehicle.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Domain\\Entities\\Vehicle.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\Vehicle.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Domain\\Entities\\Vehicle.cs",
+              "RelativeToolTip": "Domain\\Entities\\Vehicle.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwAgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:41:51.241Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "UpdateProfileRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\UpdateProfileRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\UpdateProfileRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\UpdateProfileRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\UpdateProfileRequestValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:45:20.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "LoginRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\LoginRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\LoginRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\LoginRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\LoginRequestValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:43:15.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "FuelQueryRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\FuelQueryRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\FuelQueryRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\FuelQueryRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\FuelQueryRequestValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:45:04.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "CreateVehicleRequestValidator.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateVehicleRequestValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\CreateVehicleRequestValidator.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Validators\\CreateVehicleRequestValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\CreateVehicleRequestValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:43:38.84Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "Application.csproj",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Application.csproj",
+              "RelativeDocumentMoniker": "Application\\Application.csproj",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Application.csproj",
+              "RelativeToolTip": "Application\\Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-13T07:52:46.164Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "API.csproj",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\API.csproj",
+              "RelativeDocumentMoniker": "API\\API.csproj",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\API.csproj",
+              "RelativeToolTip": "API\\API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-13T07:51:49.558Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "ErrorHandlingMiddleware.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\API\\Middlewares\\ErrorHandlingMiddleware.cs",
+              "RelativeDocumentMoniker": "API\\Middlewares\\ErrorHandlingMiddleware.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\API\\Middlewares\\ErrorHandlingMiddleware.cs",
+              "RelativeToolTip": "API\\Middlewares\\ErrorHandlingMiddleware.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwBUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T07:09:46.717Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "Infrastructure.csproj",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Infrastructure\\Infrastructure.csproj",
+              "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Infrastructure\\Infrastructure.csproj",
+              "RelativeToolTip": "Infrastructure\\Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-13T05:28:24.019Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Fuel_tracker_Management\\Application\\Class1.cs",
+              "RelativeDocumentMoniker": "Application\\Class1.cs",
+              "ToolTip": "C:\\Fuel_tracker_Management\\Application\\Class1.cs",
+              "RelativeToolTip": "Application\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T05:21:33.107Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
