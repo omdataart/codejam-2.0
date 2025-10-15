@@ -13,6 +13,19 @@ Make sure you have the following software installed on your system:
 -   [Git](https://git-scm.com/downloads)
 -   [Docker](https://www.docker.com/products/docker-desktop)
 
+### Tech Stack
+
+The application is built using the following technologies:
+
+-   **Frontend:** ReactJS (Vite)
+-   **Backend:** .NET Core
+-   **Database:** SQL Server, Entity Framework
+-   **Styling:** Tailwind CSS
+-   **State Management:** Zustand
+-   **API Handling:** Axios
+-   **Backend Simulation:** Mock API integration
+
+-   
 ### Setup and Installation
 
 1.  **Clone the repository**
