@@ -293,7 +293,7 @@ export default function History() {
               <option value="all">All vehicles</option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>
-                  {v.name}
+                  {v.label}
                 </option>
               ))}
             </select>

@@ -29,9 +29,9 @@ export default function StatsBrandGrade() {
     (async () => {
       try {
         setLoading(true);
-        const [v, f] = await Promise.all([api.get("/vehicles")]);
+        const [v] = await Promise.all([api.get("/vehicles")]);
         setVehicles(v.data.data || []);
-        console.log(f.data);
+        
 
         setError("");
       } catch (e) {
