@@ -301,7 +301,7 @@ export default function History() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
+      <div className="mx-auto max-auto px-4 py-6 sm:py-10">
         <div className="mb-4 sm:mb-6">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
             History
@@ -427,6 +427,9 @@ export default function History() {
                 <th className="text-left px-3 py-2">
                   Cost / {distanceLabel(distanceUnit)}
                 </th>
+                <th className="text-left px-3 py-2 w-40">Brand</th>
+                <th className="text-left px-3 py-2 w-40">Grade</th>
+                <th className="text-left px-3 py-2 w-40">Station</th>
                 <th className="text-left px-3 py-2 w-40">Actions</th>
               </tr>
             </thead>
@@ -495,6 +498,9 @@ export default function History() {
                           {effDisp != null ? `${num(effDisp, 1)}` : "—"}
                         </td>
                         <td className="px-3 py-2">{costPerDistDisp ?? "—"}</td>
+                        <td className="px-3 py-2">{f.brand}</td>
+                        <td className="px-3 py-2">{f.grade}</td>
+                        <td className="px-3 py-2">{f.station}</td>
                         <td className="px-3 py-2">
                           <div className="flex gap-2">
                             <button
