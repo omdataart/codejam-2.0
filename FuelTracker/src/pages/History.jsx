@@ -317,12 +317,11 @@ export default function History() {
     setEdit({
       date: row.date?.slice(0, 10) ?? "",
       odometerKm: row.odometerKm ?? "",
-      station_name: row.station_name || row.station || "",
-      fuel_brand: row.fuel_brand || row.brand || "",
-      fuel_grade: row.fuel_grade || row.grade || "",
+      station: row.station || row.station || "",
+      brand: row.brand || row.brand || "",
+      grade: row.grade || row.grade || "",
       liters: row.liters ?? "",
-      total_amount: row.total_amount ?? row.totalAmount ?? "",
-      currency_code: row.currency_code || currency,
+      totalAmount: row.totalAmount ?? row.totalAmount ?? "",
       notes: row.notes || "",
     });
   }
@@ -332,7 +331,7 @@ export default function History() {
     if (!edit.date || edit.date > today)
       return alert("Date cannot be in the future.");
     if (!(Number(edit.liters) > 0)) return alert("Volume must be > 0.");
-    if (!(Number(edit.total_amount) > 0)) return alert("Total must be > 0.");
+    if (!(Number(edit.totalAmount) > 0)) return alert("Total must be > 0.");
     if (String(edit.notes).length > 500)
       return alert("Notes must be ≤ 500 chars.");
 
@@ -340,7 +339,7 @@ export default function History() {
       ...edit,
       odometerKm: Number(edit.odometerKm),
       liters: Number(edit.liters),
-      total_amount: Number(edit.total_amount),
+      totalAmount: Number(edit.totalAmount),
     });
 
     setEditingId(null);
@@ -662,33 +661,33 @@ export default function History() {
                           <input
                             className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
                             placeholder="Total"
-                            value={edit.total_amount}
+                            value={edit.totalAmount}
                             onChange={(e) =>
-                              setEdit({ ...edit, total_amount: e.target.value })
+                              setEdit({ ...edit, totalAmount: e.target.value })
                             }
                           />
                           <input
                             className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
                             placeholder="Brand"
-                            value={edit.fuel_brand}
+                            value={edit.brand}
                             onChange={(e) =>
-                              setEdit({ ...edit, fuel_brand: e.target.value })
+                              setEdit({ ...edit, brand: e.target.value })
                             }
                           />
                           <input
                             className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
                             placeholder="Grade"
-                            value={edit.fuel_grade}
+                            value={edit.grade}
                             onChange={(e) =>
-                              setEdit({ ...edit, fuel_grade: e.target.value })
+                              setEdit({ ...edit, grade: e.target.value })
                             }
                           />
                           <input
                             className="md:col-span-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
                             placeholder="Station"
-                            value={edit.station_name}
+                            value={edit.station}
                             onChange={(e) =>
-                              setEdit({ ...edit, station_name: e.target.value })
+                              setEdit({ ...edit, station: e.target.value })
                             }
                           />
                           <input
