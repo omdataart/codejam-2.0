@@ -26,6 +26,16 @@ import {
   lPer100kmToMpg,
 } from "../utils/conversions";
 
+// dd-mm-yyyy formatter for charts & tooltips
+const formatDMY = (v) => {
+  const d = new Date(v);
+  if (Number.isNaN(+d)) return "—";
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+};
+
 export default function Dashboard() {
   const [vehicles, setVehicles] = useState([]);
   const [fills, setFills] = useState([]);
@@ -180,12 +190,10 @@ export default function Dashboard() {
       avgDistancePerDay: totalDistance / days, // km/day
     };
 
-    var result = {
+    return {
       cards: { ...kpis, empty: false },
       series: { costPerL, l100: l100Series },
     };
-    console.log(result);
-    return result;
   }, [fills, vehicleId, period, customFrom, customTo]);
 
   const showCustomMsg =
@@ -338,11 +346,16 @@ export default function Dashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={series.costPerL}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
+                        <XAxis
+                          dataKey="date"
+                          tickFormatter={formatDMY}
+                          interval="preserveStartEnd"
+                          minTickGap={16}
+                        />
                         <YAxis />
                         <Tooltip
                           formatter={(v) => pricePerVol(v)}
-                          labelFormatter={(l) => `Date: ${l}`}
+                          labelFormatter={(l) => `Date: ${formatDMY(l)}`}
                         />
                         <Line type="monotone" dataKey="value" />
                       </LineChart>
@@ -370,7 +383,12 @@ export default function Dashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={series.l100}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
+                        <XAxis
+                          dataKey="date"
+                          tickFormatter={formatDMY}
+                          interval="preserveStartEnd"
+                          minTickGap={16}
+                        />
                         <YAxis />
                         <Tooltip
                           formatter={(v) =>
@@ -378,7 +396,7 @@ export default function Dashboard() {
                               ? `${num(lPer100kmToMpg(v), 1)} MPG`
                               : `${num(v, 1)} L/100km`
                           }
-                          labelFormatter={(l) => `Date: ${l}`}
+                          labelFormatter={(l) => `Date: ${formatDMY(l)}`}
                         />
                         <Line type="monotone" dataKey="value" />
                       </LineChart>

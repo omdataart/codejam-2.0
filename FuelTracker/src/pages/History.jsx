@@ -15,6 +15,92 @@ import {
   lPer100kmToMpg,
 } from "../utils/conversions";
 
+// ---------- Inline Icons (no extra deps) ----------
+const IconBtn = ({ children, className = "", ...rest }) => (
+  <button
+    className={
+      "inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-medium transition " +
+      "focus:outline-none focus:ring-2 focus:ring-offset-2 " +
+      className
+    }
+    {...rest}
+  >
+    {children}
+  </button>
+);
+
+const PencilIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+  </svg>
+);
+
+const TrashIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6M14 11v6" />
+    <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+  </svg>
+);
+
+const CheckIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
+const XIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    <path d="M18 6L6 18M6 6l12 12" />
+  </svg>
+);
+
 // Display helper: 15-10-2025 style
 function formatDMY(dateLike) {
   const d = new Date(dateLike);
@@ -43,6 +129,9 @@ export default function History() {
   const [editingId, setEditingId] = useState(null);
   const [edit, setEdit] = useState(null);
 
+  // delete confirm state
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
   // pagination (client-side “load more”)
   const [page, setPage] = useState(1);
   const pageSize = 25;
@@ -59,7 +148,6 @@ export default function History() {
           api.get("/vehicles"),
         ]);
 
-        // Accept either {data:{items:[]}} or plain {items:[]}
         const fuelPayload = f?.data?.data ?? f?.data ?? null;
         const vehiclePayload = v?.data?.data ?? v?.data ?? [];
 
@@ -82,10 +170,7 @@ export default function History() {
     const toDate = to ? new Date(to) : null;
 
     const result = items.filter((f) => {
-      if (
-        vehicleId !== "all" &&
-        String(f.vehicleId) !== String(vehicleId) // normalize type
-      )
+      if (vehicleId !== "all" && String(f.vehicleId) !== String(vehicleId))
         return false;
 
       if (
@@ -124,14 +209,12 @@ export default function History() {
   const computed = useMemo(() => {
     if (!filtered.length || !vehicles.length) return [];
 
-    // vehicle name lookup
     const nameById = new Map(vehicles.map((v) => [String(v.id), v.label]));
     const scoped = filtered.map((f) => ({
       ...f,
       vehicleName: nameById.get(String(f.vehicleId)) || "—",
     }));
 
-    // group by vehicle, compute derived fields based on previous fill
     const grouped = {};
     for (const f of scoped) {
       grouped[f.vehicleId] ??= [];
@@ -142,7 +225,6 @@ export default function History() {
       grouped[vid].sort((a, b) => new Date(a.date) - new Date(b.date));
       let prev = null;
       for (const f of grouped[vid]) {
-        // Protect against division by zero
         const liters = Number(f.liters);
         const totalAmount = Number(f.totalAmount);
         f.unitPrice =
@@ -170,18 +252,16 @@ export default function History() {
       }
     }
 
-    // newest first
     return Object.values(grouped)
       .flat()
       .sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [filtered, vehicles, priceDecimals]);
 
-  // reset pagination when filters change
   useEffect(() => {
     setPage(1);
+    setConfirmDeleteId(null);
   }, [vehicleId, brand, grade, station, from, to]);
 
-  // visible slice
   const visible = useMemo(() => {
     if (!computed.length) return [];
     return computed.slice(0, page * pageSize);
@@ -233,8 +313,8 @@ export default function History() {
 
   function startEdit(row) {
     setEditingId(row.id);
+    setConfirmDeleteId(null);
     setEdit({
-      // keep ISO for input date
       date: row.date?.slice(0, 10) ?? "",
       odometerKm: row.odometerKm ?? "",
       station_name: row.station_name || row.station || "",
@@ -271,10 +351,10 @@ export default function History() {
   }
 
   async function remove(id) {
-    if (!confirm("Delete this fill-up?")) return;
     await api.delete(`/FuelEntries/${id}`);
     const refetch = await api.get("/FuelEntries");
     setAllFillups(refetch?.data?.data ?? refetch?.data ?? null);
+    setConfirmDeleteId(null);
   }
 
   function clearFilters() {
@@ -501,24 +581,56 @@ export default function History() {
                         <td className="px-3 py-2">{f.brand}</td>
                         <td className="px-3 py-2">{f.grade}</td>
                         <td className="px-3 py-2">{f.station}</td>
+
+                        {/* -------- Modern Actions cell -------- */}
                         <td className="px-3 py-2">
-                          <div className="flex gap-2">
-                            <button
-                              className="rounded-md px-2 py-1 text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              onClick={() => startEdit(f)}
-                              title="Edit entry"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="rounded-md px-2 py-1 text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
-                              onClick={() => remove(f.id)}
-                              title="Delete entry"
-                            >
-                              Delete
-                            </button>
-                          </div>
+                          {confirmDeleteId === f.id ? (
+                            <div className="flex items-center gap-1.5">
+                              <IconBtn
+                                className="bg-red-600 text-white shadow-sm hover:bg-red-700 focus:ring-red-600"
+                                onClick={() => remove(f.id)}
+                                aria-label="Confirm delete"
+                                title="Confirm delete"
+                              >
+                                <CheckIcon />
+                                <span className="hidden sm:inline">
+                                  Confirm
+                                </span>
+                              </IconBtn>
+                              <IconBtn
+                                className="border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 focus:ring-blue-600"
+                                onClick={() => setConfirmDeleteId(null)}
+                                aria-label="Cancel delete"
+                                title="Cancel"
+                              >
+                                <XIcon />
+                                <span className="hidden sm:inline">Cancel</span>
+                              </IconBtn>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5">
+                              <IconBtn
+                                className="border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 focus:ring-blue-600"
+                                onClick={() => startEdit(f)}
+                                aria-label="Edit entry"
+                                title="Edit"
+                              >
+                                <PencilIcon />
+                                <span className="hidden sm:inline">Edit</span>
+                              </IconBtn>
+                              <IconBtn
+                                className="border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 focus:ring-red-600"
+                                onClick={() => setConfirmDeleteId(f.id)}
+                                aria-label="Delete entry"
+                                title="Delete"
+                              >
+                                <TrashIcon />
+                                <span className="hidden sm:inline">Delete</span>
+                              </IconBtn>
+                            </div>
+                          )}
                         </td>
+                        {/* ------------------------------------- */}
                       </>
                     ) : (
                       <td className="px-3 py-2" colSpan={10}>
@@ -552,10 +664,7 @@ export default function History() {
                             placeholder="Total"
                             value={edit.total_amount}
                             onChange={(e) =>
-                              setEdit({
-                                ...edit,
-                                total_amount: e.target.value,
-                              })
+                              setEdit({ ...edit, total_amount: e.target.value })
                             }
                           />
                           <input
@@ -579,10 +688,7 @@ export default function History() {
                             placeholder="Station"
                             value={edit.station_name}
                             onChange={(e) =>
-                              setEdit({
-                                ...edit,
-                                station_name: e.target.value,
-                              })
+                              setEdit({ ...edit, station_name: e.target.value })
                             }
                           />
                           <input
@@ -595,21 +701,27 @@ export default function History() {
                           />
                         </div>
                         <div className="mt-2 flex gap-2">
-                          <button
-                            className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                          <IconBtn
+                            className="bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus:ring-blue-600"
                             onClick={() => saveEdit(f.id)}
+                            aria-label="Save changes"
+                            title="Save changes"
                           >
-                            Save
-                          </button>
-                          <button
-                            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            <CheckIcon />
+                            <span className="hidden sm:inline">Save</span>
+                          </IconBtn>
+                          <IconBtn
+                            className="border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 focus:ring-blue-600"
                             onClick={() => {
                               setEditingId(null);
                               setEdit(null);
                             }}
+                            aria-label="Cancel edit"
+                            title="Cancel"
                           >
-                            Cancel
-                          </button>
+                            <XIcon />
+                            <span className="hidden sm:inline">Cancel</span>
+                          </IconBtn>
                         </div>
                       </td>
                     )}
