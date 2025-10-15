@@ -71,150 +71,301 @@ export default function FillUpForm() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <h2 className="text-2xl font-semibold mb-4">Add Fill-Up</h2>
-      {err && <p className="text-red-600 mb-2">{err}</p>}
-
-      <form onSubmit={submit} className="grid gap-4">
-        <div className="grid md:grid-cols-2 gap-3">
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Vehicle *</span>
-            <select
-              className="border rounded p-2"
-              value={form.vehicleId}
-              onChange={(e) => setForm({ ...form, vehicleId: Number(e.target.value) })}
-            >
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Date *</span>
-            <input
-              type="date"
-              className="border rounded p-2"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-            {!v.date.ok && (
-              <span className="text-xs text-red-600">{v.date.msg}</span>
-            )}
-          </label>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:py-10">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Add Fill-Up
+          </h2>
+          <p className="text-sm text-slate-600">
+            Log a new fuel entry. Fields marked{" "}
+            <span className="text-red-600">*</span> are required.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-3">
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Odometer (km) *</span>
-            <input
-              className="border rounded p-2"
-              value={form.odometerKm}
-              onChange={(e) =>
-                setForm({ ...form, odometerKm: e.target.value })
-              }
-            />
-            {!v.odo.ok && (
-              <span className="text-xs text-red-600">{v.odo.msg}</span>
-            )}
-          </label>
-
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">
-              Volume ({volumeLabel(volumeUnit)}) *
-            </span>
-            <input
-              className="border rounded p-2"
-              value={form.liters}
-              onChange={(e) => setForm({ ...form, liters: e.target.value })}
-              placeholder={
-                volumeUnit === "gal" ? "auto-converts to liters on save" : ""
-              }
-            />
-            {!v.liters.ok && (
-              <span className="text-xs text-red-600">{v.liters.msg}</span>
-            )}
-          </label>
-
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Total ({currency}) *</span>
-            <input
-              className="border rounded p-2"
-              value={form.totalAmount}
-              onChange={(e) =>
-                setForm({ ...form, totalAmount: e.target.value })
-              }
-            />
-            {!v.total.ok && (
-              <span className="text-xs text-red-600">{v.total.msg}</span>
-            )}
-          </label>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-3">
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Station</span>
-            <input
-              className="border rounded p-2"
-              value={form.station}
-              onChange={(e) =>
-                setForm({ ...form, station: e.target.value })
-              }
-            />
-          </label>
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Brand</span>
-            <input
-              className="border rounded p-2"
-              value={form.brand}
-              onChange={(e) => setForm({ ...form, brand: e.target.value })}
-            />
-          </label>
-          <label className="flex flex-col">
-            <span className="text-sm text-gray-600">Grade</span>
-            <input
-              className="border rounded p-2"
-              value={form.grade}
-              onChange={(e) => setForm({ ...form, grade: e.target.value })}
-            />
-          </label>
-        </div>
-
-        <label className="flex flex-col">
-          <span className="text-sm text-gray-600">Notes (max 500)</span>
-          <textarea
-            className="border rounded p-2"
-            rows={3}
-            value={form.notes}
-            onChange={(e) => setForm({ ...form, notes: e.target.value })}
-          />
-          {!v.notes.ok && (
-            <span className="text-xs text-red-600">{v.notes.msg}</span>
-          )}
-        </label>
-
-        {/* Live unit price preview */}
-        <div className="text-sm text-gray-700">
-          Unit price preview:{" "}
-          <span className="font-medium">
-            {unitPriceDisplay
-              ? `${unitPriceDisplay}/${volumeLabel(volumeUnit)}`
-              : "—"}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
-            disabled={!canSave}
+        {err && (
+          <div
+            role="alert"
+            className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
           >
-            {saving ? "Saving..." : "Save"}
-          </button>
-          {!v.ok && <span className="text-xs text-red-600">{v.msg}</span>}
-        </div>
-      </form>
+            {err}
+          </div>
+        )}
+
+        <form
+          onSubmit={submit}
+          className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-5"
+          noValidate
+        >
+          {/* Row 1 */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Vehicle */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Vehicle <span className="text-red-600">*</span>
+              </span>
+              <select
+                className={[
+                  "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm",
+                  "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                ].join(" ")}
+                value={form.vehicleId}
+                onChange={(e) =>
+                  setForm({ ...form, vehicleId: Number(e.target.value) })
+                }
+                aria-invalid={!v.ok && !form.vehicleId ? true : undefined}
+              >
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {/* Date */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Date <span className="text-red-600">*</span>
+              </span>
+              <input
+                type="date"
+                className={[
+                  "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm",
+                  "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                  !v.date.ok
+                    ? "border-red-300 ring-red-400 focus:ring-red-500"
+                    : "",
+                ].join(" ")}
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                aria-invalid={!v.date.ok}
+                aria-describedby={!v.date.ok ? "date-error" : undefined}
+              />
+              {!v.date.ok && (
+                <span
+                  id="date-error"
+                  className="text-xs font-medium text-red-600"
+                >
+                  {v.date.msg}
+                </span>
+              )}
+            </label>
+          </div>
+
+          {/* Row 2 */}
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* Odometer */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Odometer (km) <span className="text-red-600">*</span>
+              </span>
+              <input
+                className={[
+                  "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm",
+                  "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                  !v.odo.ok
+                    ? "border-red-300 ring-red-400 focus:ring-red-500"
+                    : "",
+                ].join(" ")}
+                value={form.odometerKm}
+                onChange={(e) =>
+                  setForm({ ...form, odometerKm: e.target.value })
+                }
+                placeholder="e.g., 45210"
+                inputMode="numeric"
+                aria-invalid={!v.odo.ok}
+                aria-describedby={!v.odo.ok ? "odo-error" : undefined}
+              />
+              {!v.odo.ok && (
+                <span
+                  id="odo-error"
+                  className="text-xs font-medium text-red-600"
+                >
+                  {v.odo.msg}
+                </span>
+              )}
+            </label>
+
+            {/* Volume */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Volume ({volumeLabel(volumeUnit)}){" "}
+                <span className="text-red-600">*</span>
+              </span>
+              <input
+                className={[
+                  "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm",
+                  "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                  !v.liters.ok
+                    ? "border-red-300 ring-red-400 focus:ring-red-500"
+                    : "",
+                ].join(" ")}
+                value={form.liters}
+                onChange={(e) => setForm({ ...form, liters: e.target.value })}
+                placeholder={
+                  volumeUnit === "gal"
+                    ? "auto-converts to liters on save"
+                    : "e.g., 35.2"
+                }
+                inputMode="decimal"
+                aria-invalid={!v.liters.ok}
+                aria-describedby={!v.liters.ok ? "liters-error" : undefined}
+              />
+              {!v.liters.ok && (
+                <span
+                  id="liters-error"
+                  className="text-xs font-medium text-red-600"
+                >
+                  {v.liters.msg}
+                </span>
+              )}
+            </label>
+
+            {/* Total */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Total ({currency}) <span className="text-red-600">*</span>
+              </span>
+              <input
+                className={[
+                  "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm",
+                  "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                  !v.total.ok
+                    ? "border-red-300 ring-red-400 focus:ring-red-500"
+                    : "",
+                ].join(" ")}
+                value={form.totalAmount}
+                onChange={(e) =>
+                  setForm({ ...form, totalAmount: e.target.value })
+                }
+                placeholder="e.g., 2500"
+                inputMode="decimal"
+                aria-invalid={!v.total.ok}
+                aria-describedby={!v.total.ok ? "total-error" : undefined}
+              />
+              {!v.total.ok && (
+                <span
+                  id="total-error"
+                  className="text-xs font-medium text-red-600"
+                >
+                  {v.total.msg}
+                </span>
+              )}
+            </label>
+          </div>
+
+          {/* Row 3 */}
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* Station */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">
+                Station
+              </span>
+              <input
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                value={form.station}
+                onChange={(e) => setForm({ ...form, station: e.target.value })}
+                placeholder="e.g., Shell Indiranagar"
+              />
+            </label>
+
+            {/* Brand */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">Brand</span>
+              <input
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                value={form.brand}
+                onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                placeholder="e.g., Shell"
+              />
+            </label>
+
+            {/* Grade */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-slate-800">Grade</span>
+              <input
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                value={form.grade}
+                onChange={(e) => setForm({ ...form, grade: e.target.value })}
+                placeholder="e.g., Petrol 91"
+              />
+            </label>
+          </div>
+
+          {/* Notes */}
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-slate-800">
+              Notes{" "}
+              <span className="text-slate-500 font-normal">(max 500)</span>
+            </span>
+            <textarea
+              className={[
+                "rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm",
+                "transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                !v.notes.ok
+                  ? "border-red-300 ring-red-400 focus:ring-red-500"
+                  : "",
+              ].join(" ")}
+              rows={3}
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder="Optional remarks about this fill-up"
+              aria-invalid={!v.notes.ok}
+              aria-describedby={!v.notes.ok ? "notes-error" : undefined}
+            />
+            {!v.notes.ok && (
+              <span
+                id="notes-error"
+                className="text-xs font-medium text-red-600"
+              >
+                {v.notes.msg}
+              </span>
+            )}
+          </label>
+
+          {/* Live unit price preview */}
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <p className="text-sm text-slate-700">
+              Unit price preview:
+              <span className="ml-2 font-semibold text-slate-900">
+                {unitPriceDisplay
+                  ? `${unitPriceDisplay}/${volumeLabel(volumeUnit)}`
+                  : "—"}
+              </span>
+            </p>
+            {unitPriceDisplay && (
+              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-200">
+                Auto-calculated
+              </span>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className={[
+                "rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20",
+                "transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                "disabled:cursor-not-allowed disabled:opacity-60",
+              ].join(" ")}
+              disabled={!canSave}
+              title="Save fill-up"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+            {!v.ok && (
+              <span
+                className="text-xs font-medium text-red-600"
+                role="status"
+                aria-live="polite"
+              >
+                {v.msg}
+              </span>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
