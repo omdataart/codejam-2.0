@@ -1,5 +1,6 @@
 // src/pages/Settings.jsx
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useSettings, UNIT, EFF } from "../store/settingsStore";
 import { useAuthStore } from "../store/authStore";
 import api from "../lib/api";
@@ -28,6 +29,10 @@ export default function Settings() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
+  // Export state
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
+
   const currencies = [
     { code: "INR", label: "Indian Rupee (INR)" },
     { code: "USD", label: "US Dollar (USD)" },
@@ -52,7 +57,7 @@ export default function Settings() {
           currency: p.preferredCurrency || f.currency || "INR",
           distanceUnit: p.preferredDistanceUnit ?? f.distanceUnit,
           volumeUnit: p.preferredVolumeUnit ?? f.volumeUnit,
-          // If BE returns efficiencyUnit/priceDecimals, map them here similarly
+          // Map efficiencyUnit/priceDecimals here if BE returns them
         }));
       } catch {
         // silently ignore
@@ -117,6 +122,77 @@ export default function Settings() {
       setDeleting(false);
     }
   }
+
+  // -------- CSV Export ----------
+  function toCSV(rows) {
+    const esc = (v) => {
+      if (v === null || v === undefined) return "";
+      const s = String(v).replace(/"/g, '""');
+      return /[",\n]/.test(s) ? `"${s}"` : s;
+    };
+    return rows.map((r) => r.map(esc).join(",")).join("\n");
+  }
+
+  async function handleExportCSV() {
+    setExportError("");
+    setExporting(true);
+    try {
+      // Try to fetch all fillups in one go; adjust params to match your API
+      const { data } = await api.get("/fillups", {
+        params: { page: 1, pageSize: 100000 },
+      });
+
+      // Support a few common response shapes
+      const items = data?.items || data?.data || data || [];
+      if (!Array.isArray(items) || items.length === 0) {
+        throw new Error("No fill-ups found to export.");
+      }
+
+      const headers = [
+        "date",
+        "vehicle",
+        "odometer",
+        "volume",
+        "pricePerUnit",
+        "totalCost",
+        "grade",
+        "currency",
+        "notes",
+      ];
+
+      const rows = items.map((it) => [
+        it.date || it.createdAt || "",
+        it.vehicleLabel || it.vehicle?.label || it.vehicleId || "",
+        it.odometer ?? "",
+        it.volume ?? "",
+        it.pricePerUnit ?? "",
+        it.totalCost ?? it.amount ?? "",
+        it.grade || it.brand || "",
+        it.currency || form.currency || "",
+        it.notes || "",
+      ]);
+
+      const csv = toCSV([headers, ...rows]);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `fueltracker_export_${new Date()
+        .toISOString()
+        .slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setExportError(
+        e?.response?.data?.message || e.message || "Export failed."
+      );
+    } finally {
+      setExporting(false);
+    }
+  }
+  // -------- /CSV Export ----------
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -223,27 +299,39 @@ export default function Settings() {
                   <option value={UNIT.VOL_GAL}>US Gallons (gal)</option>
                 </select>
               </label>
-
-              
             </div>
           </section>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
               title="Save settings"
             >
               Save
             </button>
+
+            {/* Export CSV button */}
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              disabled={exporting}
+              className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60"
+              title="Export your fill-ups as CSV"
+            >
+              {exporting ? "Exporting…" : "Export CSV"}
+            </button>
+
+            {exportError && (
+              <span className="text-xs text-rose-600">{exportError}</span>
+            )}
+
             <span className="text-xs text-slate-500" aria-hidden="true">
               Changes apply to how values are displayed.
             </span>
           </div>
         </form>
 
-        {/* Account / Danger Zone */}
-        {/* Account / Danger Zone */}
         {/* Account / Danger Zone */}
         <section className="mt-10 rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50 to-white p-6 shadow-sm">
           <h3 className="mb-5 text-lg font-semibold text-rose-900 flex items-center gap-2">
@@ -268,7 +356,7 @@ export default function Settings() {
             </button>
           </div>
 
-          {/* Delete Account */}
+          {/* Delete Account + Privacy link */}
           <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-rose-900">
@@ -280,6 +368,15 @@ export default function Settings() {
                   This action cannot be undone.
                 </span>
               </p>
+              {/* View Privacy Policy link (next to delete area) */}
+              <div className="mt-2">
+                <Link
+                  to="/privacy"
+                  className="text-xs font-medium text-slate-700 underline hover:text-blue-700"
+                >
+                  View Privacy Policy
+                </Link>
+              </div>
             </div>
             <button
               type="button"
