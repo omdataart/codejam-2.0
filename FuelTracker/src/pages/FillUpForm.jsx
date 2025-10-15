@@ -29,7 +29,7 @@ export default function FillUpForm() {
       setVehicles(response.data.data || []);
       setForm((f) => ({
         ...f,
-        vehicleId: f.vehicleId || response.data[0]?.id || "",
+        vehicleId: f.vehicleId || response.data.data[0]?.id || "",
       }));
     })();
   }, []);

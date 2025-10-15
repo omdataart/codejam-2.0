@@ -21,50 +21,7 @@ function Private({ children }) {
 }
 
 export default function App() {
-  // ✅ Seed localStorage with mock fill-ups for export testing
-  useEffect(() => {
-    if (!localStorage.getItem("fillups")) {
-      localStorage.setItem(
-        "fillups",
-        JSON.stringify([
-          {
-            date: "2025-10-15",
-            vehicleLabel: "Maruti Swift",
-            odometer: 12000,
-            volume: 35.5,
-            pricePerUnit: 106,
-            totalCost: 3760,
-            grade: "Petrol",
-            currency: "INR",
-            notes: "Test drive export",
-          },
-          {
-            date: "2025-09-22",
-            vehicleLabel: "Hyundai i20",
-            odometer: 9500,
-            volume: 28.2,
-            pricePerUnit: 104,
-            totalCost: 2932.8,
-            grade: "Diesel",
-            currency: "INR",
-            notes: "Office commute",
-          },
-          {
-            date: "2025-08-18",
-            vehicleLabel: "Honda City",
-            odometer: 18500,
-            volume: 40.0,
-            pricePerUnit: 108,
-            totalCost: 4320,
-            grade: "Petrol",
-            currency: "INR",
-            notes: "Weekend trip",
-          },
-        ])
-      );
-      console.log("✅ Mock fill-ups seeded to localStorage.");
-    }
-  }, []);
+ 
 
   return (
     <>
