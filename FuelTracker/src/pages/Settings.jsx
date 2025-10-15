@@ -108,7 +108,7 @@ export default function Settings() {
       setDeleting(true);
       setDeleteError("");
       // 🔁 Replace with your real endpoint
-      await api.delete("/auth/account");
+      await api.delete("/profile");
       await signOut?.();
     } catch (e) {
       setDeleteError(
@@ -224,24 +224,7 @@ export default function Settings() {
                 </select>
               </label>
 
-              {/* Efficiency (optional display; keep if you use it elsewhere) */}
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-slate-800">
-                  Efficiency
-                </span>
-                <select
-                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  value={form.efficiencyUnit}
-                  onChange={(e) =>
-                    setForm({ ...form, efficiencyUnit: e.target.value })
-                  }
-                  aria-label="Preferred efficiency unit"
-                >
-                  <option value={EFF.KM_PER_L}>km/L</option>
-                  <option value={EFF.L_PER_100KM}>L/100km</option>
-                  <option value={EFF.MPG_US}>MPG (US)</option>
-                </select>
-              </label>
+              
             </div>
           </section>
 
