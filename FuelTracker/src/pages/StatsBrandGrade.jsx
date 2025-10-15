@@ -31,7 +31,6 @@ export default function StatsBrandGrade() {
         setLoading(true);
         const [v] = await Promise.all([api.get("/vehicles")]);
         setVehicles(v.data.data || []);
-        
 
         setError("");
       } catch (e) {
