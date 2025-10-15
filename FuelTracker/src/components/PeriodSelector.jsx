@@ -64,7 +64,6 @@ export default function PeriodSelector({
       >
         <option value="30">Last 30 days</option>
         <option value="90">Last 90 days</option>
-        <option value="ytd">Year to date</option>
         <option value="custom">Custom</option>
       </select>
 

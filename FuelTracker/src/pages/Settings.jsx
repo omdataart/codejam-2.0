@@ -1,53 +1,73 @@
+// src/pages/Settings.jsx
 import { useEffect, useState } from "react";
 import { useSettings, UNIT, EFF } from "../store/settingsStore";
 import api from "../lib/api";
+
 export default function Settings() {
   const settings = useSettings();
+  const setCurrency = useSettings((s) => s.setCurrency);
+  const setUnits = useSettings((s) => s.setUnits);
   const [form, setForm] = useState({
     displayName: "",
-    preferredCurrency: "INR",
-    preferredDistanceUnit: settings.preferredDistanceUnit,
-    preferredVolumeUnit: settings.preferredVolumeUnit,
+    currency: settings.currency || "INR",
+    distanceUnit: settings.distanceUnit,
+    volumeUnit: settings.volumeUnit,
     efficiencyUnit: settings.efficiencyUnit,
     priceDecimals: settings.priceDecimals ?? 2,
   });
 
+  const currencies = [
+    { code: "INR", label: "Indian Rupee (INR)" },
+    { code: "USD", label: "US Dollar (USD)" },
+    { code: "EUR", label: "Euro (EUR)" },
+    { code: "GBP", label: "British Pound (GBP)" },
+    { code: "JPY", label: "Japanese Yen (JPY)" },
+    { code: "AUD", label: "Australian Dollar (AUD)" },
+    { code: "CAD", label: "Canadian Dollar (CAD)" },
+    { code: "CHF", label: "Swiss Franc (CHF)" },
+    { code: "SGD", label: "Singapore Dollar (SGD)" },
+    { code: "AED", label: "UAE Dirham (AED)" },
+  ];
+
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       try {
-        const response = await api.get("/auth/me"); // Replace with your API endpoint
-        const userProfile = response.data.data;
+        const { data } = await api.get("/auth/me");
+        const p = data?.data || {};
+        // Map BE fields -> local form/store naming
         setForm((f) => ({
           ...f,
-          displayName: userProfile.displayName,
-          preferredCurrency: userProfile.preferredCurrency || "INR",
-          preferredDistanceUnit: userProfile.preferredDistanceUnit,
-          preferredVolumeUnit: userProfile.preferredVolumeUnit,
+          displayName: p.displayName ?? f.displayName,
+          currency: p.preferredCurrency || f.currency || "INR",
+          distanceUnit: p.preferredDistanceUnit ?? f.distanceUnit,
+          volumeUnit: p.preferredVolumeUnit ?? f.volumeUnit,
+          // efficiencyUnit / priceDecimals as needed if BE returns them
         }));
-        console.log(response.data.data);
-      } catch {
-        /* empty */
-      } finally {
-        /* empty */
-      }
-    };
-    fetchData(); // Call the async function
-  }, [settings]);
+      } catch {}
+    })();
+    // we don’t need settings in deps; form is independent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function save(e) {
     e.preventDefault();
-    // useSettings.getState().setProfile({
-    //   displayName: form.displayName.trim(),
-    //   preferredCurrency: form.preferredCurrency,
-    // });
-    // useSettings.getState().setUnits({
-    //   preferredDistanceUnit: form.preferredDistanceUnit,
-    //   preferredVolumeUnit: form.preferredVolumeUnit,
-    //   efficiencyUnit: form.efficiencyUnit,
-    //   priceDecimals: Math.min(3, Math.max(2, Number(form.priceDecimals) || 2)),
-    // });
-    await api.put(`/Profile/`, {
-      ...form,
+    // Optimistic update to local store so UI updates immediately
+    setCurrency(form.currency);
+    setUnits({
+      distanceUnit: form.distanceUnit,
+      volumeUnit: form.volumeUnit,
+      efficiencyUnit: form.efficiencyUnit,
+      priceDecimals: form.priceDecimals,
+    });
+
+    // Persist to backend (map local -> BE fields)
+    await api.put("/Profile", {
+      displayName: form.displayName,
+      preferredCurrency: form.currency,
+      preferredDistanceUnit: form.distanceUnit,
+      preferredVolumeUnit: form.volumeUnit,
+      efficiencyUnit: form.efficiencyUnit,
+      priceDecimals: form.priceDecimals,
     });
   }
 
@@ -71,6 +91,7 @@ export default function Settings() {
               Profile
             </h3>
             <div className="grid gap-3 md:grid-cols-2">
+              {/* Display Name */}
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-slate-800">
                   Display name
@@ -85,26 +106,28 @@ export default function Settings() {
                   aria-label="Display name"
                 />
               </label>
+
+              {/* Currency Dropdown */}
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-slate-800">
                   Currency (ISO code)
                 </span>
-                <input
-                  className="uppercase tracking-widest rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  value={form.preferredCurrency}
+                <select
+                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                  value={form.currency}
                   onChange={(e) =>
-                    setForm({
-                      ...form,
-                      preferredCurrency: e.target.value
-                        .toUpperCase()
-                        .slice(0, 3),
-                    })
+                    setForm({ ...form, currency: e.target.value })
                   }
-                  placeholder="e.g., INR"
-                  aria-label="Preferred currency in ISO format"
-                />
+                  aria-label="Preferred currency"
+                >
+                  {currencies.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
                 <span className="text-xs text-slate-500">
-                  Example: INR, USD, EUR
+                  Select preferred display currency
                 </span>
               </label>
             </div>
@@ -124,9 +147,9 @@ export default function Settings() {
                 </span>
                 <select
                   className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  value={form.preferredDistanceUnit}
+                  value={form.distanceUnit}
                   onChange={(e) =>
-                    setForm({ ...form, preferredDistanceUnit: e.target.value })
+                    setForm({ ...form, distanceUnit: e.target.value })
                   }
                   aria-label="Preferred distance unit"
                 >
@@ -141,9 +164,9 @@ export default function Settings() {
                 </span>
                 <select
                   className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  value={form.preferredVolumeUnit}
+                  value={form.volumeUnit}
                   onChange={(e) =>
-                    setForm({ ...form, preferredVolumeUnit: e.target.value })
+                    setForm({ ...form, volumeUnit: e.target.value })
                   }
                   aria-label="Preferred volume unit"
                 >
@@ -151,43 +174,7 @@ export default function Settings() {
                   <option value={UNIT.VOL_GAL}>US Gallons (gal)</option>
                 </select>
               </label>
-
-              {/* Keeping efficiency selector commented as in your codebase */}
-              {/* <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-slate-800">Efficiency</span>
-                <select
-                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  value={form.efficiencyUnit}
-                  onChange={(e) =>
-                    setForm({ ...form, efficiencyUnit: e.target.value })
-                  }
-                >
-                  <option value={EFF.L_PER_100KM}>L/100km (lower is better)</option>
-                  <option value={EFF.MPG}>MPG (higher is better)</option>
-                </select>
-              </label> */}
             </div>
-
-            {/* Keeping price decimals commented as in your codebase */}
-            {/* <div className="mt-3 grid gap-3 md:grid-cols-3">
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-slate-800">Price decimals (per L/gal)</span>
-                <input
-                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                  type="number"
-                  min="2"
-                  max="3"
-                  value={form.priceDecimals}
-                  onChange={(e) =>
-                    setForm({ ...form, priceDecimals: e.target.value })
-                  }
-                  aria-label="Price decimals"
-                />
-              </label>
-              <div className="md:col-span-2 text-xs text-slate-500">
-                Display only: data stays stored as metric (km, L). Conversions are computed at view time.
-              </div>
-            </div> */}
           </section>
 
           {/* Actions */}

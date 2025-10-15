@@ -15,8 +15,18 @@ import {
   lPer100kmToMpg,
 } from "../utils/conversions";
 
+// Display helper: 15-10-2025 style
+function formatDMY(dateLike) {
+  const d = new Date(dateLike);
+  if (Number.isNaN(+d)) return "—";
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+}
+
 export default function History() {
-  const [allFillups, setAllFillups] = useState([]);
+  const [allFillups, setAllFillups] = useState(null); // API returns { items, totalCount, page, pageSize }
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,7 +43,7 @@ export default function History() {
   const [editingId, setEditingId] = useState(null);
   const [edit, setEdit] = useState(null);
 
-  // pagination
+  // pagination (client-side “load more”)
   const [page, setPage] = useState(1);
   const pageSize = 25;
 
@@ -44,13 +54,18 @@ export default function History() {
     (async () => {
       try {
         setLoading(true);
-        // forkjoin
         const [f, v] = await Promise.all([
           api.get("/FuelEntries"),
           api.get("/vehicles"),
         ]);
-        setAllFillups(f.data.data || []);
-        setVehicles(v.data.data || []);
+
+        // Accept either {data:{items:[]}} or plain {items:[]}
+        const fuelPayload = f?.data?.data ?? f?.data ?? null;
+        const vehiclePayload = v?.data?.data ?? v?.data ?? [];
+
+        setAllFillups(fuelPayload);
+        setVehicles(Array.isArray(vehiclePayload) ? vehiclePayload : []);
+        setError("");
       } catch (e) {
         setError(e?.response?.data?.message || e.message || "Failed to load");
       } finally {
@@ -60,12 +75,19 @@ export default function History() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (!allFillups || allFillups.length === 0) return [];
+    const items = allFillups?.items ?? [];
+    if (!Array.isArray(items) || items.length === 0) return [];
+
     const fromDate = from ? new Date(from) : null;
     const toDate = to ? new Date(to) : null;
 
-    var result = allFillups.items.filter((f) => {
-      if (vehicleId !== "all" && f.vehicleId !== vehicleId) return false;
+    const result = items.filter((f) => {
+      if (
+        vehicleId !== "all" &&
+        String(f.vehicleId) !== String(vehicleId) // normalize type
+      )
+        return false;
+
       if (
         brand &&
         !String(f.brand ?? "")
@@ -87,42 +109,58 @@ export default function History() {
           .includes(station.toLowerCase())
       )
         return false;
+
       const d = new Date(f.date);
+      if (Number.isNaN(+d)) return false;
       if (fromDate && d < fromDate) return false;
       if (toDate && d > toDate) return false;
+
       return true;
     });
 
-    console.log(result);
     return result;
   }, [allFillups, vehicleId, brand, grade, station, from, to]);
 
   const computed = useMemo(() => {
-    if (!filtered || filtered.length === 0 || !vehicles) return [];
-    // add vehicle name lookup
-    const nameById = new Map(vehicles.map((v) => [v.id, v.label]));
+    if (!filtered.length || !vehicles.length) return [];
+
+    // vehicle name lookup
+    const nameById = new Map(vehicles.map((v) => [String(v.id), v.label]));
     const scoped = filtered.map((f) => ({
       ...f,
-      vehicleName: nameById.get(f.vehicleId) || "—",
+      vehicleName: nameById.get(String(f.vehicleId)) || "—",
     }));
 
+    // group by vehicle, compute derived fields based on previous fill
     const grouped = {};
     for (const f of scoped) {
       grouped[f.vehicleId] ??= [];
-      grouped[f.vehicleId].push(f);
+      grouped[f.vehicleId].push({ ...f });
     }
 
     for (const vid of Object.keys(grouped)) {
       grouped[vid].sort((a, b) => new Date(a.date) - new Date(b.date));
       let prev = null;
       for (const f of grouped[vid]) {
-        // canonical unitPrice per L
-        f.unitPrice = round(Number(f.totalAmount) / Number(f.liters), 2);
-        if (prev && f.odometerKm > prev.odometerKm) {
+        // Protect against division by zero
+        const liters = Number(f.liters);
+        const totalAmount = Number(f.totalAmount);
+        f.unitPrice =
+          liters > 0
+            ? round(totalAmount / liters, Math.max(2, priceDecimals))
+            : null;
+
+        if (
+          prev &&
+          Number.isFinite(prev.odometerKm) &&
+          Number.isFinite(f.odometerKm) &&
+          f.odometerKm > prev.odometerKm
+        ) {
           const dist = f.odometerKm - prev.odometerKm; // km
           f.distanceSinceLastKm = dist;
-          f.costPerKm = round(Number(f.totalAmount) / dist, 2);
-          f.consumptionLPer100Km = round((Number(f.liters) / dist) * 100, 1);
+          f.costPerKm = dist > 0 ? round(totalAmount / dist, 2) : null;
+          f.consumptionLPer100Km =
+            dist > 0 ? round((liters / dist) * 100, 1) : null;
         } else {
           f.distanceSinceLastKm = null;
           f.costPerKm = null;
@@ -132,24 +170,21 @@ export default function History() {
       }
     }
 
-    // sort desc by date
-    var result = Object.values(grouped)
+    // newest first
+    return Object.values(grouped)
       .flat()
       .sort((a, b) => new Date(b.date) - new Date(a.date));
-    console.log(result);
-    return result;
-  }, [filtered, vehicles]);
+  }, [filtered, vehicles, priceDecimals]);
 
   // reset pagination when filters change
   useEffect(() => {
     setPage(1);
   }, [vehicleId, brand, grade, station, from, to]);
 
-  // page slice
+  // visible slice
   const visible = useMemo(() => {
-    if (!computed) return [];
-    var result = computed.slice(0, page * pageSize);
-    return result;
+    if (!computed.length) return [];
+    return computed.slice(0, page * pageSize);
   }, [computed, page]);
 
   const summary = useMemo(() => {
@@ -161,7 +196,7 @@ export default function History() {
     );
 
     const distances = computed
-      .filter((f) => f.distanceSinceLastKm)
+      .filter((f) => f.distanceSinceLastKm != null)
       .map((f) => f.distanceSinceLastKm);
     const totalDistanceKm = distances.reduce((a, b) => a + b, 0);
     const totalDistanceDisp =
@@ -199,13 +234,14 @@ export default function History() {
   function startEdit(row) {
     setEditingId(row.id);
     setEdit({
-      date: row.date,
-      odometerKm: row.odometerKm,
-      station_name: row.station_name || "",
-      fuel_brand: row.fuel_brand || "",
-      fuel_grade: row.fuel_grade || "",
-      liters: row.liters,
-      total_amount: row.total_amount,
+      // keep ISO for input date
+      date: row.date?.slice(0, 10) ?? "",
+      odometerKm: row.odometerKm ?? "",
+      station_name: row.station_name || row.station || "",
+      fuel_brand: row.fuel_brand || row.brand || "",
+      fuel_grade: row.fuel_grade || row.grade || "",
+      liters: row.liters ?? "",
+      total_amount: row.total_amount ?? row.totalAmount ?? "",
       currency_code: row.currency_code || currency,
       notes: row.notes || "",
     });
@@ -226,17 +262,19 @@ export default function History() {
       liters: Number(edit.liters),
       total_amount: Number(edit.total_amount),
     });
+
     setEditingId(null);
     setEdit(null);
-    const { data } = await api.get("/FuelEntries");
-    setAllFillups(data);
+
+    const refetch = await api.get("/FuelEntries");
+    setAllFillups(refetch?.data?.data ?? refetch?.data ?? null);
   }
 
   async function remove(id) {
     if (!confirm("Delete this fill-up?")) return;
     await api.delete(`/FuelEntries/${id}`);
-    const { data } = await api.get("/FuelEntries");
-    setAllFillups(data);
+    const refetch = await api.get("/FuelEntries");
+    setAllFillups(refetch?.data?.data ?? refetch?.data ?? null);
   }
 
   function clearFilters() {
@@ -248,7 +286,7 @@ export default function History() {
     setTo("");
   }
 
-  if (loading)
+  if (loading) {
     return (
       <div className="min-h-[60vh] bg-gradient-to-b from-slate-50 to-white">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
@@ -259,6 +297,7 @@ export default function History() {
         </div>
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -282,65 +321,66 @@ export default function History() {
         )}
 
         {/* Filters */}
-        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-3 sm:p-4 shadow-sm">
-          <div className="grid gap-2 md:grid-cols-6">
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-end gap-3">
             <select
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full sm:w-auto flex-1 min-w-[160px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
               value={vehicleId}
               onChange={(e) => setVehicleId(e.target.value)}
               aria-label="Filter by vehicle"
             >
               <option value="all">All vehicles</option>
               {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
+                <option key={v.id} value={String(v.id)}>
                   {v.label}
                 </option>
               ))}
             </select>
+
             <input
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full sm:w-auto flex-1 min-w-[130px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
               placeholder="Brand"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
               aria-label="Filter by brand"
             />
             <input
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full sm:w-auto flex-1 min-w-[130px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
               placeholder="Grade"
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
               aria-label="Filter by grade"
             />
             <input
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full sm:w-auto flex-1 min-w-[130px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
               placeholder="Station"
               value={station}
               onChange={(e) => setStation(e.target.value)}
               aria-label="Filter by station"
             />
+
             <input
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full sm:w-auto flex-1 min-w-[160px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
               type="date"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               aria-label="From date"
             />
-            <div className="flex gap-2">
-              <input
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                type="date"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                aria-label="To date"
-              />
-              <button
-                onClick={clearFilters}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                title="Clear filters"
-              >
-                Clear
-              </button>
-            </div>
+            <input
+              className="w-full sm:w-auto flex-1 min-w-[160px] rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
+              type="date"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              aria-label="To date"
+            />
+
+            <button
+              onClick={clearFilters}
+              className="ml-auto sm:ml-0 whitespace-nowrap rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
+              title="Clear filters"
+            >
+              Clear
+            </button>
           </div>
         </div>
 
@@ -391,194 +431,187 @@ export default function History() {
               </tr>
             </thead>
             <tbody className="text-slate-800">
-              {Array.isArray(visible) &&
-                visible.length > 0 &&
-                visible.map((f) => {
-                  // display conversions
-                  const volDisp =
-                    volumeUnit === "gal" ? lToGal(f.liters) : f.liters;
-                  const totalDisp = money(f.totalAmount, currency);
-                  const unitPriceDisp =
-                    f.unitPrice != null
-                      ? new Intl.NumberFormat(undefined, {
-                          style: "currency",
-                          currency,
-                          maximumFractionDigits: priceDecimals,
-                        }).format(
-                          volumeUnit === "gal"
-                            ? f.unitPrice * L_PER_GAL
-                            : f.unitPrice
-                        )
-                      : null;
+              {visible.map((f) => {
+                const volDisp =
+                  volumeUnit === "gal" ? lToGal(f.liters) : f.liters;
+                const totalDisp = money(f.totalAmount, currency);
+                const unitPriceDisp =
+                  f.unitPrice != null
+                    ? new Intl.NumberFormat(undefined, {
+                        style: "currency",
+                        currency,
+                        maximumFractionDigits: priceDecimals,
+                      }).format(
+                        volumeUnit === "gal"
+                          ? f.unitPrice * L_PER_GAL
+                          : f.unitPrice
+                      )
+                    : null;
 
-                  const distDisp =
-                    f.distanceSinceLastKm != null
-                      ? distanceUnit === "mi"
-                        ? kmToMi(f.distanceSinceLastKm)
-                        : f.distanceSinceLastKm
-                      : null;
+                const distDisp =
+                  f.distanceSinceLastKm != null
+                    ? distanceUnit === "mi"
+                      ? kmToMi(f.distanceSinceLastKm)
+                      : f.distanceSinceLastKm
+                    : null;
 
-                  const effDisp =
-                    f.consumptionLPer100Km != null
-                      ? efficiencyUnit === "mpg"
-                        ? lPer100kmToMpg(f.consumptionLPer100Km)
-                        : f.consumptionLPer100Km
-                      : null;
+                const effDisp =
+                  f.consumptionLPer100Km != null
+                    ? efficiencyUnit === "mpg"
+                      ? lPer100kmToMpg(f.consumptionLPer100Km)
+                      : f.consumptionLPer100Km
+                    : null;
 
-                  const costPerDistDisp =
-                    f.costPerKm != null
-                      ? new Intl.NumberFormat(undefined, {
-                          style: "currency",
-                          currency,
-                          maximumFractionDigits: 2,
-                        }).format(
-                          distanceUnit === "mi"
-                            ? f.costPerKm * KM_PER_MILE
-                            : f.costPerKm
-                        )
-                      : null;
+                const costPerDistDisp =
+                  f.costPerKm != null
+                    ? new Intl.NumberFormat(undefined, {
+                        style: "currency",
+                        currency,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        distanceUnit === "mi"
+                          ? f.costPerKm * KM_PER_MILE
+                          : f.costPerKm
+                      )
+                    : null;
 
-                  return (
-                    <tr
-                      key={f.id}
-                      className="border-t border-slate-200 align-top hover:bg-slate-50/60"
-                    >
-                      {editingId !== f.id ? (
-                        <>
-                          <td className="px-3 py-2">{f.date}</td>
-                          <td className="px-3 py-2">{f.vehicleName}</td>
-                          <td className="px-3 py-2">{f.odometerKm}</td>
-                          <td className="px-3 py-2">{num(volDisp, 2)}</td>
-                          <td className="px-3 py-2">{totalDisp}</td>
-                          <td className="px-3 py-2">{unitPriceDisp ?? "—"}</td>
-                          <td className="px-3 py-2">
-                            {distDisp != null ? num(distDisp, 0) : "—"}
-                          </td>
-                          <td className="px-3 py-2">
-                            {effDisp != null ? `${num(effDisp, 1)}` : "—"}
-                          </td>
-                          <td className="px-3 py-2">
-                            {costPerDistDisp ?? "—"}
-                          </td>
-                          <td className="px-3 py-2">
-                            <div className="flex gap-2">
-                              <button
-                                className="rounded-md px-2 py-1 text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                                onClick={() => startEdit(f)}
-                                title="Edit entry"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="rounded-md px-2 py-1 text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
-                                onClick={() => remove(f.id)}
-                                title="Delete entry"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </>
-                      ) : (
-                        <td className="px-3 py-2" colSpan={10}>
-                          <div className="grid gap-2 md:grid-cols-5">
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              type="date"
-                              value={edit.date}
-                              onChange={(e) =>
-                                setEdit({ ...edit, date: e.target.value })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Odometer"
-                              value={edit.odometerKm}
-                              onChange={(e) =>
-                                setEdit({ ...edit, odometerKm: e.target.value })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder={`Volume (${volumeLabel(
-                                volumeUnit
-                              )})`}
-                              value={edit.liters}
-                              onChange={(e) =>
-                                setEdit({ ...edit, liters: e.target.value })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Total"
-                              value={edit.total_amount}
-                              onChange={(e) =>
-                                setEdit({
-                                  ...edit,
-                                  total_amount: e.target.value,
-                                })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Brand"
-                              value={edit.fuel_brand}
-                              onChange={(e) =>
-                                setEdit({ ...edit, fuel_brand: e.target.value })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Grade"
-                              value={edit.fuel_grade}
-                              onChange={(e) =>
-                                setEdit({ ...edit, fuel_grade: e.target.value })
-                              }
-                            />
-                            <input
-                              className="md:col-span-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Station"
-                              value={edit.station_name}
-                              onChange={(e) =>
-                                setEdit({
-                                  ...edit,
-                                  station_name: e.target.value,
-                                })
-                              }
-                            />
-                            <input
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              placeholder="Notes"
-                              value={edit.notes}
-                              onChange={(e) =>
-                                setEdit({ ...edit, notes: e.target.value })
-                              }
-                            />
-                          </div>
-                          <div className="mt-2 flex gap-2">
+                return (
+                  <tr
+                    key={f.id}
+                    className="border-t border-slate-200 align-top hover:bg-slate-50/60"
+                  >
+                    {editingId !== f.id ? (
+                      <>
+                        <td className="px-3 py-2">{formatDMY(f.date)}</td>
+                        <td className="px-3 py-2">{f.vehicleName}</td>
+                        <td className="px-3 py-2">{f.odometerKm}</td>
+                        <td className="px-3 py-2">{num(volDisp, 2)}</td>
+                        <td className="px-3 py-2">{totalDisp}</td>
+                        <td className="px-3 py-2">{unitPriceDisp ?? "—"}</td>
+                        <td className="px-3 py-2">
+                          {distDisp != null ? num(distDisp, 0) : "—"}
+                        </td>
+                        <td className="px-3 py-2">
+                          {effDisp != null ? `${num(effDisp, 1)}` : "—"}
+                        </td>
+                        <td className="px-3 py-2">{costPerDistDisp ?? "—"}</td>
+                        <td className="px-3 py-2">
+                          <div className="flex gap-2">
                             <button
-                              className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              onClick={() => saveEdit(f.id)}
+                              className="rounded-md px-2 py-1 text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                              onClick={() => startEdit(f)}
+                              title="Edit entry"
                             >
-                              Save
+                              Edit
                             </button>
                             <button
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              onClick={() => {
-                                setEditingId(null);
-                                setEdit(null);
-                              }}
+                              className="rounded-md px-2 py-1 text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+                              onClick={() => remove(f.id)}
+                              title="Delete entry"
                             >
-                              Cancel
+                              Delete
                             </button>
                           </div>
                         </td>
-                      )}
-                    </tr>
-                  );
-                })}
+                      </>
+                    ) : (
+                      <td className="px-3 py-2" colSpan={10}>
+                        <div className="grid gap-2 md:grid-cols-5">
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            type="date"
+                            value={edit.date}
+                            onChange={(e) =>
+                              setEdit({ ...edit, date: e.target.value })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Odometer"
+                            value={edit.odometerKm}
+                            onChange={(e) =>
+                              setEdit({ ...edit, odometerKm: e.target.value })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder={`Volume (${volumeLabel(volumeUnit)})`}
+                            value={edit.liters}
+                            onChange={(e) =>
+                              setEdit({ ...edit, liters: e.target.value })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Total"
+                            value={edit.total_amount}
+                            onChange={(e) =>
+                              setEdit({
+                                ...edit,
+                                total_amount: e.target.value,
+                              })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Brand"
+                            value={edit.fuel_brand}
+                            onChange={(e) =>
+                              setEdit({ ...edit, fuel_brand: e.target.value })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Grade"
+                            value={edit.fuel_grade}
+                            onChange={(e) =>
+                              setEdit({ ...edit, fuel_grade: e.target.value })
+                            }
+                          />
+                          <input
+                            className="md:col-span-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Station"
+                            value={edit.station_name}
+                            onChange={(e) =>
+                              setEdit({
+                                ...edit,
+                                station_name: e.target.value,
+                              })
+                            }
+                          />
+                          <input
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            placeholder="Notes"
+                            value={edit.notes}
+                            onChange={(e) =>
+                              setEdit({ ...edit, notes: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            onClick={() => saveEdit(f.id)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            onClick={() => {
+                              setEditingId(null);
+                              setEdit(null);
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
 
-              {/* Summary Row (for full filtered set, not just visible page) */}
+              {/* Summary (for full filtered set) */}
               {computed.length > 0 && summary && (
                 <tr className="border-t border-slate-200 bg-slate-50 font-semibold text-slate-900">
                   <td colSpan={4} className="px-3 py-2 text-right">
@@ -610,7 +643,7 @@ export default function History() {
                 </tr>
               )}
 
-              {Array.isArray(visible) && visible.length === 0 && (
+              {visible.length === 0 && (
                 <tr>
                   <td
                     className="px-3 py-6 text-center text-slate-500"
@@ -624,8 +657,8 @@ export default function History() {
           </table>
         </div>
 
-        {/* Pagination: Load more */}
-        {computed.length > (Array.isArray(visible) ? visible.length : 0) && (
+        {/* Load more */}
+        {computed.length > visible.length && (
           <div className="my-4 flex justify-center">
             <button
               onClick={() => setPage((p) => p + 1)}
