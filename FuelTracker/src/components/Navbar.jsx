@@ -2,7 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 export default function Navbar() {
-  const { user, signOut } = useAuthStore();
+  const { user } = useAuthStore(); // removed signOut since Logout button removed
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -42,6 +42,7 @@ export default function Navbar() {
                 ["Vehicles", "/app/vehicles"],
                 ["Brand Stats", "/app/stats/brand-grade"],
                 ["Settings", "/app/settings"],
+                ["Privacy", "/privacy"], // ✅ Privacy page link
               ].map(([label, path]) => (
                 <NavLink
                   key={path}
@@ -58,13 +59,6 @@ export default function Navbar() {
                   {label}
                 </NavLink>
               ))}
-
-              <button
-                onClick={signOut}
-                className="ml-2 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-slate-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 text-sm font-medium"
-              >
-                Logout
-              </button>
             </>
           ) : (
             <>
@@ -93,6 +87,19 @@ export default function Navbar() {
                 }
               >
                 Sign Up
+              </NavLink>
+              <NavLink
+                to="/privacy"
+                className={({ isActive }) =>
+                  [
+                    "rounded-md px-3 py-1.5 transition-colors duration-200",
+                    isActive
+                      ? "bg-blue-50 text-blue-700 font-semibold"
+                      : "text-slate-700 hover:text-blue-700 hover:bg-slate-100",
+                  ].join(" ")
+                }
+              >
+                Privacy
               </NavLink>
             </>
           )}

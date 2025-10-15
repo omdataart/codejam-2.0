@@ -9,7 +9,8 @@ import History from "./pages/History";
 import FillUpForm from "./pages/FillUpForm";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import StatsBrandGrade from "./pages/StatsBrandGrade"; // 👈 add this
+import StatsBrandGrade from "./pages/StatsBrandGrade";
+import Privacy from "./pages/Privacy"; // ✅ Added this line
 import { useAuthStore } from "./store/authStore";
 
 function Private({ children }) {
@@ -22,33 +23,30 @@ export default function App() {
     <>
       <Navbar />
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/signup" element={<SignUpPage />} />
-
+        <Route path="/privacy" element={<Privacy />} /> {/* ✅ Public route */}
+        {/* Protected routes */}
         <Route
           path="/app/*"
           element={
             <Private>
               <Routes>
-                <Route index element={<Navigate to="dashboard" replace />} />{" "}
-                {/* optional: redirect /app -> dashboard */}
+                <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="history" element={<History />} />
                 <Route path="fillups/new" element={<FillUpForm />} />
                 <Route path="vehicles" element={<Vehicles />} />
-                <Route
-                  path="stats/brand-grade"
-                  element={<StatsBrandGrade />}
-                />{" "}
-                {/* 👈 new */}
+                <Route path="stats/brand-grade" element={<StatsBrandGrade />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Private>
           }
         />
-
+        {/* Catch-all for invalid routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
