@@ -10,7 +10,6 @@ export default function Settings() {
   const setCurrency = useSettings((s) => s.setCurrency);
   const setUnits = useSettings((s) => s.setUnits);
 
-  // Auth actions (fallback to either signOut or logout depending on your store)
   const signOut =
     useAuthStore((s) => s.signOut) || useAuthStore((s) => s.logout);
 
@@ -23,13 +22,13 @@ export default function Settings() {
     priceDecimals: settings.priceDecimals ?? 2,
   });
 
-  // Delete-account dialog state
+  // Delete account dialog state
   const [showDelete, setShowDelete] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
-  // Export state
+  // Export CSV state
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState("");
 
@@ -57,19 +56,15 @@ export default function Settings() {
           currency: p.preferredCurrency || f.currency || "INR",
           distanceUnit: p.preferredDistanceUnit ?? f.distanceUnit,
           volumeUnit: p.preferredVolumeUnit ?? f.volumeUnit,
-          // Map efficiencyUnit/priceDecimals here if BE returns them
         }));
       } catch {
-        // silently ignore
+        // ignore
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function save(e) {
     e.preventDefault();
-
-    // optimistic local store update
     setCurrency(form.currency);
     setUnits({
       distanceUnit: form.distanceUnit,
@@ -77,8 +72,6 @@ export default function Settings() {
       efficiencyUnit: form.efficiencyUnit,
       priceDecimals: form.priceDecimals,
     });
-
-    // persist to backend
     await api.put("/Profile", {
       displayName: form.displayName,
       preferredCurrency: form.currency,
@@ -92,9 +85,7 @@ export default function Settings() {
   async function handleSignOut() {
     try {
       await signOut?.();
-    } catch {
-      // optionally toast error
-    }
+    } catch {}
   }
 
   function openDeleteDialog() {
@@ -112,7 +103,6 @@ export default function Settings() {
     try {
       setDeleting(true);
       setDeleteError("");
-      // 🔁 Replace with your real endpoint
       await api.delete("/profile");
       await signOut?.();
     } catch (e) {
@@ -123,7 +113,7 @@ export default function Settings() {
     }
   }
 
-  // -------- CSV Export ----------
+  // --- Export CSV (client-only) ---
   function toCSV(rows) {
     const esc = (v) => {
       if (v === null || v === undefined) return "";
@@ -133,21 +123,45 @@ export default function Settings() {
     return rows.map((r) => r.map(esc).join(",")).join("\n");
   }
 
+  function downloadBlob(text, filename, type = "text/csv;charset=utf-8;") {
+    const blob = new Blob([text], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function readFillupsFromLocalStorage() {
+    const KEYS = [
+      "fillups",
+      "mock_fillups",
+      "ft_fillups",
+      "fueltracker_fillups",
+    ];
+    for (const k of KEYS) {
+      try {
+        const raw = localStorage.getItem(k);
+        if (!raw) continue;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+        if (Array.isArray(parsed?.items) && parsed.items.length)
+          return parsed.items;
+        if (Array.isArray(parsed?.data) && parsed.data.length)
+          return parsed.data;
+      } catch {}
+    }
+    return [];
+  }
+
   async function handleExportCSV() {
     setExportError("");
     setExporting(true);
     try {
-      // Try to fetch all fillups in one go; adjust params to match your API
-      const { data } = await api.get("/fillups", {
-        params: { page: 1, pageSize: 100000 },
-      });
-
-      // Support a few common response shapes
-      const items = data?.items || data?.data || data || [];
-      if (!Array.isArray(items) || items.length === 0) {
-        throw new Error("No fill-ups found to export.");
-      }
-
+      const items = readFillupsFromLocalStorage();
       const headers = [
         "date",
         "vehicle",
@@ -159,6 +173,12 @@ export default function Settings() {
         "currency",
         "notes",
       ];
+
+      if (!items.length) {
+        const template = toCSV([headers]);
+        downloadBlob(template, "fueltracker_template.csv");
+        return;
+      }
 
       const rows = items.map((it) => [
         it.date || it.createdAt || "",
@@ -173,26 +193,17 @@ export default function Settings() {
       ]);
 
       const csv = toCSV([headers, ...rows]);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `fueltracker_export_${new Date()
-        .toISOString()
-        .slice(0, 10)}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setExportError(
-        e?.response?.data?.message || e.message || "Export failed."
+      downloadBlob(
+        csv,
+        `fueltracker_export_${new Date().toISOString().slice(0, 10)}.csv`
       );
+    } catch (e) {
+      setExportError(e?.message || "Export failed.");
     } finally {
       setExporting(false);
     }
   }
-  // -------- /CSV Export ----------
+  // --- /Export CSV ---
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -226,14 +237,13 @@ export default function Settings() {
                     setForm({ ...form, displayName: e.target.value })
                   }
                   placeholder="Your name"
-                  aria-label="Display name"
                 />
               </label>
 
               {/* Currency Dropdown */}
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-slate-800">
-                  Currency (ISO code)
+                  Currency
                 </span>
                 <select
                   className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
@@ -241,7 +251,6 @@ export default function Settings() {
                   onChange={(e) =>
                     setForm({ ...form, currency: e.target.value })
                   }
-                  aria-label="Preferred currency"
                 >
                   {currencies.map((c) => (
                     <option key={c.code} value={c.code}>
@@ -249,9 +258,6 @@ export default function Settings() {
                     </option>
                   ))}
                 </select>
-                <span className="text-xs text-slate-500">
-                  Select preferred display currency
-                </span>
               </label>
             </div>
           </section>
@@ -275,7 +281,6 @@ export default function Settings() {
                   onChange={(e) =>
                     setForm({ ...form, distanceUnit: e.target.value })
                   }
-                  aria-label="Preferred distance unit"
                 >
                   <option value={UNIT.DIST_KM}>Kilometers (km)</option>
                   <option value={UNIT.DIST_MI}>Miles (mi)</option>
@@ -293,7 +298,6 @@ export default function Settings() {
                   onChange={(e) =>
                     setForm({ ...form, volumeUnit: e.target.value })
                   }
-                  aria-label="Preferred volume unit"
                 >
                   <option value={UNIT.VOL_L}>Liters (L)</option>
                   <option value={UNIT.VOL_GAL}>US Gallons (gal)</option>
@@ -304,38 +308,27 @@ export default function Settings() {
 
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-              title="Save settings"
-            >
+            <button className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
               Save
             </button>
 
-            {/* Export CSV button */}
             <button
               type="button"
               onClick={handleExportCSV}
               disabled={exporting}
               className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-60"
-              title="Export your fill-ups as CSV"
             >
               {exporting ? "Exporting…" : "Export CSV"}
             </button>
-
             {exportError && (
               <span className="text-xs text-rose-600">{exportError}</span>
             )}
-
-            <span className="text-xs text-slate-500" aria-hidden="true">
-              Changes apply to how values are displayed.
-            </span>
           </div>
         </form>
 
-        {/* Account / Danger Zone */}
+        {/* Account Management */}
         <section className="mt-10 rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50 to-white p-6 shadow-sm">
           <h3 className="mb-5 text-lg font-semibold text-rose-900 flex items-center gap-2">
-            <span className="i-lucide-shield-alert text-rose-600" />
             Account Management
           </h3>
 
@@ -344,19 +337,19 @@ export default function Settings() {
             <div>
               <p className="text-sm font-medium text-slate-900">Sign out</p>
               <p className="text-xs text-slate-600">
-                Log out of FuelTracker safely on this device.
+                Log out safely on this device.
               </p>
             </div>
             <button
               onClick={handleSignOut}
               type="button"
-              className="rounded-xl border border-slate-300 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+              className="rounded-xl border border-slate-300 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
             >
               Sign out
             </button>
           </div>
 
-          {/* Delete Account + Privacy link */}
+          {/* Delete Account */}
           <div className="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-rose-900">
@@ -368,7 +361,6 @@ export default function Settings() {
                   This action cannot be undone.
                 </span>
               </p>
-              {/* View Privacy Policy link (next to delete area) */}
               <div className="mt-2">
                 <Link
                   to="/privacy"
@@ -381,7 +373,7 @@ export default function Settings() {
             <button
               type="button"
               onClick={openDeleteDialog}
-              className="rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 px-5 py-2 text-sm font-medium text-white shadow-md shadow-rose-600/30 transition hover:from-rose-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-rose-600 focus:ring-offset-2"
+              className="rounded-xl bg-gradient-to-r from-rose-600 to-pink-600 px-5 py-2 text-sm font-medium text-white shadow-md shadow-rose-600/30 hover:from-rose-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-rose-600 focus:ring-offset-2"
             >
               Delete account
             </button>
@@ -389,31 +381,19 @@ export default function Settings() {
         </section>
       </div>
 
-      {/* Delete-account Modal */}
+      {/* Delete Modal */}
       {showDelete && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-          aria-labelledby="delete-account-title"
-          role="dialog"
-          aria-modal="true"
-        >
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-slate-900/50"
             onClick={closeDeleteDialog}
           />
-
-          {/* Dialog */}
           <div className="relative z-[101] w-full max-w-md rounded-2xl bg-white p-5 shadow-xl ring-1 ring-slate-200">
-            <h4
-              id="delete-account-title"
-              className="text-lg font-semibold text-slate-900"
-            >
+            <h4 className="text-lg font-semibold text-slate-900">
               Delete account?
             </h4>
             <p className="mt-2 text-sm text-slate-600">
-              This will permanently remove your account and all associated data
-              from FuelTracker.{" "}
+              This will permanently remove your account and data.{" "}
               <span className="font-semibold">
                 This action cannot be undone.
               </span>
